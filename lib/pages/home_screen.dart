@@ -47,7 +47,7 @@ class HomeScreen extends StatelessWidget {
                   children: [
                     _buildButton(context, 'Sign In', Colors.white, Colors.black, const RegisterScreen()),
                     const SizedBox(height: 15),
-                    _buildButton(context, 'Log In', Colors.yellow, Colors.black, const LoginScreen()),
+                    _buildButton(context, 'Log In', Colors.amberAccent, Colors.black, const LoginScreen()),
                     const SizedBox(height: 15),
                     _buildButton(
                       context,

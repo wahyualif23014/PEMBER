@@ -8,7 +8,7 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: Color(0xFF1A1A1A),
       resizeToAvoidBottomInset: false, // Menghindari tampilan naik saat keyboard muncul
       body: SingleChildScrollView( // Memastikan tampilan bisa di-scroll
         child: Padding(
@@ -31,7 +31,7 @@ class LoginScreen extends StatelessWidget {
               // Login Button
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.yellow,
+                  backgroundColor: Colors.amberAccent,
                   padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
                 ),
