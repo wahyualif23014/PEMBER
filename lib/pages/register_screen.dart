@@ -7,9 +7,9 @@ class RegisterScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF040404),
+      backgroundColor: Color(0xFF1A1A1A),
       appBar: AppBar(
-        backgroundColor: Color(0xFF040404),
+        backgroundColor: Color(0xFF1A1A1A),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.amberAccent),
           onPressed: () {

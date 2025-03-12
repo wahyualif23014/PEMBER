@@ -32,10 +32,10 @@ class _CustomTextFieldState extends State<CustomTextField> {
         obscureText: widget.isPassword ? isObscure : false,
         style: const TextStyle(color: Colors.white),
         decoration: InputDecoration(
-          prefixIcon: Icon(widget.icon, color: Colors.yellow),
+          prefixIcon: Icon(widget.icon, color: Colors.amberAccent),
           suffixIcon: widget.isPassword
               ? IconButton(
-                  icon: Icon(isObscure ? Icons.visibility_off : Icons.visibility, color: Colors.yellow),
+                  icon: Icon(isObscure ? Icons.visibility_off : Icons.visibility, color: Colors.amberAccent),
                   onPressed: () {
                     setState(() {
                       isObscure = !isObscure;
