@@ -17,7 +17,7 @@ class LoginScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const SizedBox(height: 88), // Spasi untuk keseimbangan UI
-              Image.asset('assets/logo.png', height: 100), // Logo
+              Image.asset('assets/newlogo.png', height: 100), // Logo
               const SizedBox(height: 60),
               
               // Username

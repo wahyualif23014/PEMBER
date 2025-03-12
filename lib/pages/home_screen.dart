@@ -32,7 +32,7 @@ class HomeScreen extends StatelessWidget {
               Center(
                 child: Column(
                   children: [
-                    Image.asset('assets/logo.png', height: 100),
+                    Image.asset('assets/newlogo.png', height: 100),
                     const SizedBox(height: 20),
                   ],
                 ),

@@ -23,7 +23,7 @@ class RegisterScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Image.asset('assets/logo.png', height: 100),
+              Image.asset('assets/newlogo.png', height: 100),
               const SizedBox(height: 10),
               const SizedBox(height: 30),
               const CustomTextField(icon: Icons.person, hintText: 'USERNAME'),
