@@ -61,6 +61,10 @@ flutter:
   assets:
   - assets/BG1.png
   - assets/newlogo.png
+  - assets/Group39.png
+  - assets/forza.png
+  - assets/grand.png
+  - assets/mupy.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

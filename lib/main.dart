@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'pages/home_screen.dart';
+import 'screens/home_screen.dart';
+import 'pages/utama_screen.dart';
+import 'screens/register_screen.dart';
+import 'screens/login_screen.dart'; 
 
 void main() {
   runApp(const MyApp());
 }
-
-// Test
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -16,7 +17,13 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Absolute Cinema',
       theme: ThemeData.dark(),
-      home: const HomeScreen(),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => const HomeScreen(),
+        '/login': (context) => const LoginScreen(),
+        '/register': (context) => const RegisterScreen(),
+        '/home': (context) => const UtamaScreen(),
+      },
     );
   }
 }

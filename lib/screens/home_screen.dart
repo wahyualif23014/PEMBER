@@ -82,7 +82,7 @@ class HomeScreen extends StatelessWidget {
             ? () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) => page));
               }
-            : null, // Disable button if no page assigned
+            : null, 
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

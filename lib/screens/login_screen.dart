@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'register_screen.dart';
+import '../pages/utama_screen.dart'; // Import langsung dari file yang sama level
 import '../widgets/custom_textfield.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -8,26 +9,23 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF1A1A1A),
-      resizeToAvoidBottomInset: false, // Menghindari tampilan naik saat keyboard muncul
-      body: SingleChildScrollView( // Memastikan tampilan bisa di-scroll
+      backgroundColor: const Color(0xFF1A1A1A),
+      resizeToAvoidBottomInset: false,
+      body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const SizedBox(height: 88), // Spasi untuk keseimbangan UI
-              Image.asset('assets/newlogo.png', height: 100), // Logo
+              const SizedBox(height: 88),
+              Image.asset('assets/newlogo.png', height: 100),
               const SizedBox(height: 60),
-              
               // Username
-              const CustomTextField(icon: Icons.person, hintText: 'Username'),
+              const CustomTextField(icon: Icons.person, hintText: 'Email'),
               const SizedBox(height: 15),
-              
               // Password
               const CustomTextField(icon: Icons.lock, hintText: 'PASSWORD', isPassword: true),
               const SizedBox(height: 15),
-              
               // Login Button
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
@@ -35,11 +33,16 @@ class LoginScreen extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
                 ),
-                onPressed: () {}, 
+                onPressed: () {
+                  // Navigasi ke halaman Home setelah login
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const UtamaScreen()),
+                  );
+                },
                 child: const Text('Log In', style: TextStyle(color: Colors.black)),
               ),
               const SizedBox(height: 10),
-              
               // Sign Up Button
               TextButton(
                 onPressed: () {
@@ -57,7 +60,6 @@ class LoginScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              
               SizedBox(height: MediaQuery.of(context).viewInsets.bottom), // Menyesuaikan dengan keyboard
             ],
           ),

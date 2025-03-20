@@ -26,7 +26,7 @@ class RegisterScreen extends StatelessWidget {
               Image.asset('assets/newlogo.png', height: 100),
               const SizedBox(height: 10),
               const SizedBox(height: 30),
-              const CustomTextField(icon: Icons.person, hintText: 'USERNAME'),
+              const CustomTextField(icon: Icons.person, hintText: 'NAME'),
               const SizedBox(height: 15),
               const CustomTextField(icon: Icons.email, hintText: 'EMAIL'),
               const SizedBox(height: 15),
