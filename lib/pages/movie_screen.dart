@@ -1,7 +1,20 @@
 import 'package:flutter/material.dart';
 
-class SearchBarApp extends StatelessWidget {
+class SearchBarApp extends StatefulWidget {
+  const SearchBarApp({super.key});
+
+  @override
+  State<SearchBarApp> createState() => _SearchBarAppState();
+}
+
+class _SearchBarAppState extends State<SearchBarApp> {
   final TextEditingController searchController = TextEditingController();
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -12,14 +25,13 @@ class SearchBarApp extends StatelessWidget {
         decoration: InputDecoration(
           hintText: 'Cari film...',
           prefixIcon: Icon(Icons.search),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
         ),
       ),
     );
   }
-}  
+}
+
 class MovieDetailScreen extends StatelessWidget {
   final String movieTitle;
   final String movieDescription;
@@ -29,36 +41,37 @@ class MovieDetailScreen extends StatelessWidget {
     Key? key,
     this.movieTitle = "Film Contoh",
     this.movieDescription = "Deskripsi film contoh.",
-    this.movieImage = "assets/Group39.png", // Ganti dengan gambar film yang sesuai
+    this.movieImage = "assets/Group39.png",
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(movieTitle),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Image.asset(movieImage, fit: BoxFit.cover),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Text(
-                movieDescription,
-                style: TextStyle(fontSize: 16),
-              ),
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Image.asset(movieImage, fit: BoxFit.cover),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text(
+              movieTitle,
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
-            ElevatedButton(
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Text(movieDescription, style: TextStyle(fontSize: 16)),
+          ),
+          const SizedBox(height: 20),
+          Center(
+            child: ElevatedButton(
               onPressed: () {
-                // Logika untuk memesan tiket
-                // Misalnya, navigasi ke halaman pemesanan tiket
-                Navigator.pushNamed(context, '/booking'); // Ganti dengan rute yang sesuai
+                Navigator.pushNamed(context, '/booking');
               },
-              child: Text('Pesan Tiket'),
+              child: const Text('Pesan Tiket'),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

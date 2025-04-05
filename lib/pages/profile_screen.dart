@@ -1,21 +1,23 @@
+import 'package:absolute_cinema/themes/warna.dart';
 import 'package:flutter/material.dart';
 import '../screens/login_screen.dart';
+
 class ProfileScreen extends StatelessWidget {
   final String username;
   final String email;
   final String profileImage;
 
   const ProfileScreen({
-    Key? key,
+    super.key,
     this.username = " Dewa saja",
     this.email = "sadewa@example.com",
     this.profileImage = "assets/mupy.jpg",
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF1A1A1A),
+      backgroundColor: AppColors.background,
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -37,7 +39,7 @@ class ProfileScreen extends StatelessWidget {
                     backgroundImage: AssetImage(profileImage),
                   ),
                   const SizedBox(height: 16),
-                  
+
                   // Nama pengguna
                   Text(
                     username,
@@ -48,23 +50,23 @@ class ProfileScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  
+
                   // Email
                   Text(
                     email,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      color: Colors.grey,
-                    ),
+                    style: const TextStyle(fontSize: 16, color: Colors.grey),
                   ),
                   const SizedBox(height: 20),
-                  
+
                   // Edit Profil
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.amberAccent,
                       foregroundColor: Colors.black,
-                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 12,
+                      ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
                       ),
@@ -82,7 +84,7 @@ class ProfileScreen extends StatelessWidget {
                 ],
               ),
             ),
-            
+
             // Menu item
             const SizedBox(height: 20),
             _buildMenuItem(
@@ -91,22 +93,26 @@ class ProfileScreen extends StatelessWidget {
               title: 'Riwayat Pembelian',
               onTap: () {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Riwayat Pembelian akan segera tersedia')),
+                  const SnackBar(
+                    content: Text('Riwayat Pembelian akan segera tersedia'),
+                  ),
                 );
               },
             ),
-            
+
             _buildMenuItem(
               context,
               icon: Icons.favorite,
               title: 'Film Favorit',
               onTap: () {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Film Favorit akan segera tersedia')),
+                  const SnackBar(
+                    content: Text('Film Favorit akan segera tersedia'),
+                  ),
                 );
               },
             ),
-            
+
             _buildMenuItem(
               context,
               icon: Icons.card_giftcard,
@@ -114,22 +120,26 @@ class ProfileScreen extends StatelessWidget {
               subtitle: '240 points',
               onTap: () {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Reward Point akan segera tersedia')),
+                  const SnackBar(
+                    content: Text('Reward Point akan segera tersedia'),
+                  ),
                 );
               },
             ),
-            
+
             _buildMenuItem(
               context,
               icon: Icons.settings,
               title: 'Pengaturan',
               onTap: () {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Pengaturan akan segera tersedia')),
+                  const SnackBar(
+                    content: Text('Pengaturan akan segera tersedia'),
+                  ),
                 );
               },
             ),
-            
+
             _buildMenuItem(
               context,
               icon: Icons.help_outline,
@@ -140,9 +150,9 @@ class ProfileScreen extends StatelessWidget {
                 );
               },
             ),
-            
+
             const SizedBox(height: 20),
-            
+
             // Tombol logout
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -159,36 +169,48 @@ class ProfileScreen extends StatelessWidget {
                   // Logika untuk logout
                   showDialog(
                     context: context,
-                    builder: (context) => AlertDialog(
-                      backgroundColor: const Color(0xFF252525),
-                      title: const Text('Logout', style: TextStyle(color: Colors.white)),
-                      content: const Text(
-                        'Apakah Anda yakin ingin keluar?',
-                        style: TextStyle(color: Colors.white70),
-                      ),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(context),
-                          child: const Text('Batal', style: TextStyle(color: Colors.grey)),
+                    builder:
+                        (context) => AlertDialog(
+                          backgroundColor: const Color(0xFF252525),
+                          title: const Text(
+                            'Logout',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          content: const Text(
+                            'Apakah Anda yakin ingin keluar?',
+                            style: TextStyle(color: Colors.white70),
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: const Text(
+                                'Batal',
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const LoginScreen(),
+                                  ),
+                                );
+                              },
+                              child: const Text(
+                                'Logout',
+                                style: TextStyle(color: Colors.red),
+                              ),
+                            ),
+                          ],
                         ),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(builder: (context) => const LoginScreen()),
-                            );
-                          },
-                          child: const Text('Logout', style: TextStyle(color: Colors.red)),
-                        ),
-                      ],
-                    ),
                   );
                 },
                 child: const Text('Logout'),
               ),
             ),
             const SizedBox(height: 20),
-            
+
             // Versi aplikasi
             const Text(
               'Versi 1.0.0',
@@ -217,10 +239,15 @@ class ProfileScreen extends StatelessWidget {
         child: ListTile(
           leading: Icon(icon, color: Colors.amberAccent),
           title: Text(title, style: const TextStyle(color: Colors.white)),
-          subtitle: subtitle != null 
-              ? Text(subtitle, style: const TextStyle(color: Colors.grey))
-              : null,
-          trailing: const Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 16),
+          subtitle:
+              subtitle != null
+                  ? Text(subtitle, style: const TextStyle(color: Colors.grey))
+                  : null,
+          trailing: const Icon(
+            Icons.arrow_forward_ios,
+            color: Colors.grey,
+            size: 16,
+          ),
           onTap: onTap,
         ),
       ),

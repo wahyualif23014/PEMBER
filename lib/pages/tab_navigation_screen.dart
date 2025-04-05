@@ -1,18 +1,19 @@
+import 'package:absolute_cinema/themes/warna.dart';
 import 'package:flutter/material.dart';
-import 'movie_screen.dart';
-import 'upcomming_screen.dart';
-import 'tiket_screen.dart';
-import 'profile_screen.dart';
+import 'package:absolute_cinema/pages/movie_screen.dart';
+import 'package:absolute_cinema/pages/upcomming_screen.dart';
+import 'package:absolute_cinema/pages/tiket_screen.dart';
+import 'package:absolute_cinema/pages/profile_screen.dart';
 import '../widgets/custom_navbar.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+class TabNavigationScreen extends StatefulWidget {
+  const TabNavigationScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<TabNavigationScreen> createState() => _TabNavigationScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _TabNavigationScreenState extends State<TabNavigationScreen> {
   int _selectedIndex = 0;
 
   final List<Widget> _pages = const [
@@ -40,9 +41,10 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF1A1A1A),
+      backgroundColor: AppColors.background,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF1A1A1A),
+        automaticallyImplyLeading: false,
+        backgroundColor: AppColors.background,
         elevation: 0,
         centerTitle: true,
         title: Text(
@@ -50,19 +52,7 @@ class _HomeScreenState extends State<HomeScreen> {
           style: const TextStyle(color: Colors.white),
         ),
       ),
-      body: Column(
-        children: [
-          Expanded(child: _pages[_selectedIndex]),
-          const Padding(
-            padding: EdgeInsets.all(16.0),
-            child: Text(
-              'Selamat Datang di Halaman Utama!',
-              style: TextStyle(color: Colors.white, fontSize: 20),
-              textAlign: TextAlign.center,
-            ),
-          ),
-        ],
-      ),
+      body: _pages[_selectedIndex],
       bottomNavigationBar: CustomNavBar(
         selectedIndex: _selectedIndex,
         onItemTapped: (index) {
