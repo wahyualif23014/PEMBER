@@ -10,71 +10,70 @@ class WelcomeScreen extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
-          // Background Image
+          // Background image
           Positioned.fill(
             child: Image.asset('assets/BG1.png', fit: BoxFit.cover),
           ),
-          // Overlay Blur Effect
+
+          // Overlay dark blur
           Positioned.fill(
             child: Container(color: Colors.black.withValues(alpha: .6)),
           ),
-          // Content Layout
-          Column(
-            children: [
-              const Spacer(), // Memberi ruang kosong di atas
-              // Logo
-              Center(
-                child: Column(
+
+          // Content
+          Positioned.fill(
+            child: Column(
+              children: [
+                const Spacer(),
+
+                Column(
                   children: [
                     Image.asset('assets/newlogo.png', height: 100),
                     const SizedBox(height: 20),
                   ],
                 ),
-              ),
 
-              const Spacer(), // Membantu meletakkan tombol di bawah
-              // Button Section
-              Padding(
-                padding: const EdgeInsets.only(
-                  bottom: 100.0,
-                ), // Menyesuaikan dengan desain
-                child: Column(
-                  children: [
-                    _buildButton(
-                      context,
-                      'Sign In',
-                      Colors.white,
-                      Colors.black,
-                      const RegisterScreen(),
-                    ),
-                    const SizedBox(height: 15),
-                    _buildButton(
-                      context,
-                      'Log In',
-                      Colors.amberAccent,
-                      Colors.black,
-                      const LoginScreen(),
-                    ),
-                    const SizedBox(height: 15),
-                    _buildButton(
-                      context,
-                      'Google Account',
-                      Colors.white,
-                      Colors.black,
-                      null,
-                      icon: Icons.account_circle,
-                    ),
-                  ],
+                const Spacer(),
+
+                // Button section
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 100),
+                  child: Column(
+                    children: [
+                      _buildButton(
+                        context,
+                        'Sign In',
+                        Colors.white,
+                        Colors.black,
+                        const RegisterScreen(),
+                      ),
+                      const SizedBox(height: 15),
+                      _buildButton(
+                        context,
+                        'Log In',
+                        Colors.amberAccent,
+                        Colors.black,
+                        const LoginScreen(),
+                      ),
+                      const SizedBox(height: 15),
+                      _buildButton(
+                        context,
+                        'Google Account',
+                        Colors.white,
+                        Colors.black,
+                        null,
+                        icon: Icons.account_circle,
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
     );
   }
-
-  // test
 
   Widget _buildButton(
     BuildContext context,
@@ -97,9 +96,9 @@ class WelcomeScreen extends StatelessWidget {
         onPressed:
             page != null
                 ? () {
-                  Navigator.pushReplacementNamed(
+                  Navigator.push(
                     context,
-                    text == 'Sign In' ? '/register' : '/login',
+                    MaterialPageRoute(builder: (context) => page),
                   );
                 }
                 : null,

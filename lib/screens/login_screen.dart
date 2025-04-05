@@ -59,7 +59,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF1A1A1A),
+      backgroundColor: const Color(0xFF1A1A1A),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -81,7 +81,7 @@ class _LoginScreenState extends State<LoginScreen> {
               Image.asset('assets/newlogo.png', height: 100),
               const SizedBox(height: 60),
 
-              // Username
+              // Email
               CustomTextField(
                 icon: Icons.email,
                 hintText: 'Email',
@@ -89,7 +89,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 onChanged: _validateEmail,
                 errorText: _emailError,
               ),
-
               const SizedBox(height: 15),
 
               // Password
@@ -126,7 +125,7 @@ class _LoginScreenState extends State<LoginScreen> {
               // Sign Up Button
               TextButton(
                 onPressed: () {
-                  Navigator.push(
+                  Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
                       builder: (context) => const RegisterScreen(),
