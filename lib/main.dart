@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:absolute_cinema/screens/login_screen.dart';
 import 'package:absolute_cinema/screens/register_screen.dart';
 import "package:absolute_cinema/screens/welcome_screen.dart";
+import 'package:absolute_cinema/pages/location.dart';
 
 void main() {
   runApp(const MyApp());
@@ -23,6 +24,7 @@ class MyApp extends StatelessWidget {
         '/login': (context) => const LoginScreen(),
         '/register': (context) => const RegisterScreen(),
         '/home': (context) => const TabNavigationScreen(),
+        '/location-search': (context) => const LocationSearchPage(),
       },
     );
   }
