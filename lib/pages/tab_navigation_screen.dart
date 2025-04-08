@@ -7,7 +7,8 @@ import 'package:absolute_cinema/pages/profile_screen.dart';
 import '../widgets/custom_navbar.dart';
 import '../widgets/location_bar.dart';
 import '../widgets/carousel_slider.dart';
-import '../widgets/movie_section.dart';
+import '../widgets/movie_section.dart'; // Ensure this file contains the MovieSection widget definition
+import '../pages/movie_screen.dart';
 
 class TabNavigationScreen extends StatefulWidget {
   const TabNavigationScreen({super.key});
@@ -75,12 +76,12 @@ class _TabNavigationScreenState extends State<TabNavigationScreen> {
             ),
           ),
         ),
-        bottomNavigationBar: CustomBottomNavigation(
-          selectedIndex: _selectedIndex,
-          onItemSelected: (index) {
-            setState(() {
-              _selectedIndex = index;
-            });
+        bottomNavigationBar: CustomNavBar(
+        selectedIndex: _selectedIndex,
+        onItemTapped: (index) {
+        setState(() {
+      _selectedIndex = index;
+    });
           },
         ),
       );
@@ -104,15 +105,15 @@ class _TabNavigationScreenState extends State<TabNavigationScreen> {
             },
           ),
         ),
-        body: _pages[_selectedIndex],
-        bottomNavigationBar: CustomBottomNavigation(
-          selectedIndex: _selectedIndex,
-          onItemSelected: (index) {
-            setState(() {
-              _selectedIndex = index;
-            });
-          },
-        ),
+              body: _pages[_selectedIndex],
+              bottomNavigationBar: CustomNavBar(
+              selectedIndex: _selectedIndex,
+              onItemTapped: (index) {
+              setState(() {
+            _selectedIndex = index;
+          });
+        },
+      ),
       );
     }
   }
