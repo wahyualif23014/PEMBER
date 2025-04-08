@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Absolute Cinema',
       theme: ThemeData.dark(),
-      initialRoute: '/home',
+      initialRoute: '/',
       routes: {
         '/': (context) => const WelcomeScreen(),
         '/login': (context) => const LoginScreen(),
