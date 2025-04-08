@@ -7,7 +7,7 @@ import 'package:absolute_cinema/pages/profile_screen.dart';
 import '../widgets/custom_navbar.dart';
 import '../widgets/location_bar.dart';
 import '../widgets/carousel_slider.dart';
-import '../widgets/movie_section.dart'; // Ensure this file contains the MovieSection widget definition
+import '../widgets/movie_section.dart'; 
 import '../pages/movie_screen.dart';
 
 class TabNavigationScreen extends StatefulWidget {
