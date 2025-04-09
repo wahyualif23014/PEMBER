@@ -1,6 +1,6 @@
 import 'package:absolute_cinema/themes/warna.dart';
 import 'package:flutter/material.dart';
-import '../screens/login_screen.dart';
+import 'auth/login_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   final String username;

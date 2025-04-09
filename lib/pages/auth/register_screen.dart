@@ -1,20 +1,36 @@
 import 'package:flutter/material.dart';
-import 'register_screen.dart';
-import '../widgets/custom_textfield.dart';
+import '../../widgets/custom_textfield.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class RegisterScreen extends StatefulWidget {
+  const RegisterScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _RegisterScreenState extends State<RegisterScreen> {
+  final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
 
+  String? _usernameError;
   String? _emailError;
   String? _passwordError;
+  String? _confirmPasswordError;
+
+  void _validateUsername(String value) {
+    setState(() {
+      if (value.isEmpty) {
+        _usernameError = 'Username cannot be empty';
+      } else if (value.length < 3) {
+        _usernameError = 'Username must be at least 3 characters';
+      } else {
+        _usernameError = null;
+      }
+    });
+  }
 
   void _validateEmail(String value) {
     setState(() {
@@ -37,32 +53,54 @@ class _LoginScreenState extends State<LoginScreen> {
       } else {
         _passwordError = null;
       }
+
+      if (_confirmPasswordController.text.isNotEmpty) {
+        _validateConfirmPassword(_confirmPasswordController.text);
+      }
+    });
+  }
+
+  void _validateConfirmPassword(String value) {
+    setState(() {
+      if (value.isEmpty) {
+        _confirmPasswordError = 'Confirm password cannot be empty';
+      } else if (value != _passwordController.text) {
+        _confirmPasswordError = 'Passwords do not match';
+      } else {
+        _confirmPasswordError = null;
+      }
     });
   }
 
   void _validateInputs() {
+    _validateUsername(_usernameController.text);
     _validateEmail(_emailController.text);
     _validatePassword(_passwordController.text);
+    _validateConfirmPassword(_confirmPasswordController.text);
 
-    if (_emailError == null && _passwordError == null) {
+    if (_usernameError == null &&
+        _emailError == null &&
+        _passwordError == null &&
+        _confirmPasswordError == null) {
       Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
     }
   }
 
   @override
   void dispose() {
+    _usernameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
+    _confirmPasswordController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF1A1A1A),
+      backgroundColor: Color(0xFF1A1A1A),
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
+        backgroundColor: Color(0xFF1A1A1A),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.amberAccent),
           onPressed: () {
@@ -70,18 +108,25 @@ class _LoginScreenState extends State<LoginScreen> {
           },
         ),
       ),
-      resizeToAvoidBottomInset: false,
       body: SingleChildScrollView(
+        // Menambahkan scroll agar tidak overflow
         child: Padding(
           padding: const EdgeInsets.all(20.0),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const SizedBox(height: 88),
               Image.asset('assets/newlogo.png', height: 100),
-              const SizedBox(height: 60),
+              const SizedBox(height: 10),
+              const SizedBox(height: 30),
+              CustomTextField(
+                icon: Icons.person,
+                hintText: 'Username',
+                controller: _usernameController,
+                onChanged: _validateUsername,
+                errorText: _usernameError,
+              ),
 
-              // Email
+              const SizedBox(height: 15),
               CustomTextField(
                 icon: Icons.email,
                 hintText: 'Email',
@@ -89,9 +134,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 onChanged: _validateEmail,
                 errorText: _emailError,
               ),
-              const SizedBox(height: 15),
 
-              // Password
+              const SizedBox(height: 15),
               CustomTextField(
                 icon: Icons.lock,
                 hintText: 'Password',
@@ -101,8 +145,15 @@ class _LoginScreenState extends State<LoginScreen> {
                 errorText: _passwordError,
               ),
               const SizedBox(height: 15),
-
-              // Login Button
+              CustomTextField(
+                icon: Icons.lock,
+                hintText: 'Confirm Password',
+                isPassword: true,
+                controller: _confirmPasswordController,
+                onChanged: _validateConfirmPassword,
+                errorText: _confirmPasswordError,
+              ),
+              const SizedBox(height: 30),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.amberAccent,
@@ -116,41 +167,30 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 onPressed: _validateInputs,
                 child: const Text(
-                  'Log In',
-                  style: TextStyle(color: Colors.black),
+                  'Sign Up',
+                  style: TextStyle(color: Colors.black, fontSize: 18),
                 ),
               ),
-              const SizedBox(height: 10),
-
-              // Sign Up Button
-              TextButton(
-                onPressed: () {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const RegisterScreen(),
-                    ),
-                  );
+              const SizedBox(height: 20),
+              GestureDetector(
+                onTap: () {
+                  Navigator.pushReplacementNamed(context, '/login');
                 },
                 child: RichText(
                   text: const TextSpan(
                     children: [
                       TextSpan(
-                        text: 'Don\'t have an account? ',
-                        style: TextStyle(
-                          color: Color.fromARGB(255, 255, 255, 255),
-                        ),
+                        text: 'Already have an account? ',
+                        style: TextStyle(color: Colors.white),
                       ),
                       TextSpan(
-                        text: 'Sign Up',
+                        text: 'Log In',
                         style: TextStyle(color: Colors.amberAccent),
                       ),
                     ],
                   ),
                 ),
               ),
-
-              SizedBox(height: MediaQuery.of(context).viewInsets.bottom),
             ],
           ),
         ),

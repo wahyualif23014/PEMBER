@@ -1,9 +1,9 @@
 import 'package:absolute_cinema/pages/tab_navigation_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:absolute_cinema/screens/login_screen.dart';
-import 'package:absolute_cinema/screens/register_screen.dart';
-import "package:absolute_cinema/screens/welcome_screen.dart";
-import 'package:absolute_cinema/screens/location.dart';
+import 'package:absolute_cinema/pages/auth/login_screen.dart';
+import 'package:absolute_cinema/pages/auth/register_screen.dart';
+import "package:absolute_cinema/pages/auth/welcome_screen.dart";
+import 'package:absolute_cinema/pages/auth/location.dart';
 
 void main() {
   runApp(const MyApp());
@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Absolute Cinema',
       theme: ThemeData.dark(),
-      initialRoute: '/home',
+      initialRoute: '/',
       routes: {
         '/': (context) => const WelcomeScreen(),
         '/login': (context) => const LoginScreen(),

@@ -13,6 +13,7 @@ class _CarouselSliderWidgetState extends State<CarouselSliderWidget> {
     'assets/forza.png',
     'assets/Group39.png',
   ];
+  
 
   final PageController _pageController = PageController(viewportFraction: 0.8);
 

@@ -24,9 +24,8 @@ class _TabNavigationScreenState extends State<TabNavigationScreen> {
     'Profile',
   ];
 
-  // List halaman selain home (index 0 akan dihandle manual di bawah)
   final List<Widget> _pages = const [
-    HomeScreen(), // Placeholder untuk index 0 (home), tidak digunakan
+    HomeScreen(), 
     UpcomingScreen(),
     TicketScreen(),
     ProfileScreen(),
