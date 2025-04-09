@@ -9,7 +9,7 @@ class UpcomingScreen extends StatelessWidget {
 
   const UpcomingScreen({
     super.key,
-    this.upcomingTitle = "Film Mendatang",
+    this.upcomingTitle = "Up Comming Film",
     this.upcomingDescription = "Film baru yang akan segera tayang di bioskop.",
     this.upcomingImage = "assets/Group39.png",
     this.releaseDate = "Akan tayang pada 1 April 2025",

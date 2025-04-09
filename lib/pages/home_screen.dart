@@ -96,7 +96,6 @@ class MovieCard extends StatelessWidget {
                       const Icon(Icons.broken_image),
             ),
           ),
-          // Judul dan deskripsi
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(8),
