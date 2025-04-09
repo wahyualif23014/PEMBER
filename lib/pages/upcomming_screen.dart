@@ -1,106 +1,166 @@
-import 'package:absolute_cinema/themes/warna.dart';
 import 'package:flutter/material.dart';
 
-class UpcomingScreen extends StatelessWidget {
-  final String upcomingTitle;
-  final String upcomingDescription;
-  final String upcomingImage;
-  final String releaseDate;
+class MovieModel {
+  final String title;
+  final String image;
+  final String rating;
 
-  const UpcomingScreen({
-    super.key,
-    this.upcomingTitle = "Up Comming Film",
-    this.upcomingDescription = "Film baru yang akan segera tayang di bioskop.",
-    this.upcomingImage = "assets/Group39.png",
-    this.releaseDate = "Akan tayang pada 1 April 2025",
-  });
+  MovieModel({required this.title, required this.image, required this.rating});
+}
+
+class UpcomingTabbarContent extends StatefulWidget {
+  const UpcomingTabbarContent({super.key});
+
+  @override
+  State<UpcomingTabbarContent> createState() => _UpcomingTabbarContentState();
+}
+
+class _UpcomingTabbarContentState extends State<UpcomingTabbarContent>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+
+  final List<MovieModel> nowShowingMovies = [
+    MovieModel(
+      title: "Naruto The Last",
+      image: "assets/naruto.png",
+      rating: "9.2",
+    ),
+    MovieModel(title: "Demon Slayer", image: "assets/demon.png", rating: "9.0"),
+    MovieModel(
+      title: "Jujutsu Kaisen",
+      image: "assets/jujutsu.png",
+      rating: "9.1",
+    ),
+    MovieModel(title: "Demon Slayer", image: "assets/demon.png", rating: "9.0"),
+    MovieModel(
+      title: "Jujutsu Kaisen",
+      image: "assets/jujutsu.png",
+      rating: "9.1",
+    ),
+    MovieModel(title: "Demon Slayer", image: "assets/demon.png", rating: "9.0"),
+    MovieModel(
+      title: "Jujutsu Kaisen",
+      image: "assets/jujutsu.png",
+      rating: "9.1",
+    ),
+    MovieModel(title: "Demon Slayer", image: "assets/demon.png", rating: "9.0"),
+    MovieModel(
+      title: "Jujutsu Kaisen",
+      image: "assets/jujutsu.png",
+      rating: "9.1",
+    ),
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Banner film
-            Container(
-              height: 250,
-              width: double.infinity,
-              child: Image.asset(upcomingImage, fit: BoxFit.cover),
-            ),
-
-            // Judul film
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Text(
-                upcomingTitle,
-                style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
+    return DefaultTabController(
+      length: 2,
+      child: Column(
+        children: [
+          // Tab bar
+          Container(
+            decoration: const BoxDecoration(
+              border: Border(
+                bottom: BorderSide(color: Colors.yellow, width: 1),
               ),
             ),
-
-            // Tanggal rilis
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Text(
-                releaseDate,
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: Colors.amberAccent,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
+            child: TabBar(
+              controller: _tabController,
+              indicatorColor: Colors.yellow,
+              indicatorWeight: 3,
+              labelColor: Colors.yellow,
+              unselectedLabelColor: Colors.grey,
+              labelStyle: const TextStyle(fontWeight: FontWeight.bold),
+              tabs: const [Tab(text: 'Now Showing'), Tab(text: 'Upcoming')],
             ),
+          ),
 
-            // Deskripsi film
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Text(
-                upcomingDescription,
-                style: const TextStyle(fontSize: 16, color: Colors.white70),
-              ),
-            ),
-
-            // Tombol untuk notifikasi
-            Center(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.amberAccent,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 40,
-                      vertical: 12,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                  ),
-                  onPressed: () {
-                    // Logika untuk mengatur notifikasi ketika film tayang
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text(
-                          'Anda akan mendapatkan notifikasi saat film ini tayang',
-                        ),
-                        backgroundColor: Colors.green,
+          Expanded(
+            child: TabBarView(
+              controller: _tabController,
+              children: [
+                LayoutBuilder(
+                  builder: (context, constraints) {
+                    return Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: GridView.builder(
+                        itemCount: nowShowingMovies.length,
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              mainAxisSpacing: 12,
+                              crossAxisSpacing: 12,
+                              childAspectRatio: 0.7, 
+                            ),
+                        itemBuilder: (context, index) {
+                          final movie = nowShowingMovies[index];
+                          return MovieCard(movie: movie);
+                        },
                       ),
                     );
                   },
-                  child: const Text(
-                    'Ingatkan Saya',
-                    style: TextStyle(color: Colors.black),
+                ),
+
+                const Center(
+                  child: Text(
+                    "Belum ada film upcoming...",
+                    style: TextStyle(color: Colors.white70),
                   ),
                 ),
-              ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
+    );
+  }
+}
+
+class MovieCard extends StatelessWidget {
+  final MovieModel movie;
+
+  const MovieCard({super.key, required this.movie});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          height: 140,
+          width: double.infinity,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            image: DecorationImage(
+              image: AssetImage(movie.image),
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+        const SizedBox(height: 6),
+        Text(
+          movie.title,
+          style: const TextStyle(color: Colors.white),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+        Text(
+          "Rate ${movie.rating}",
+          style: const TextStyle(color: Colors.white70, fontSize: 12),
+        ),
+      ],
     );
   }
 }

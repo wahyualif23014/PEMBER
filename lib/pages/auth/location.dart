@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-
 class LocationSearchPage extends StatefulWidget {
   const LocationSearchPage({super.key});
 
@@ -31,9 +30,10 @@ class _LocationSearchPageState extends State<LocationSearchPage> {
   void _filterLocations(String query) {
     setState(() {
       _searchQuery = query;
-      _filteredLocations = _availableLocations
-          .where((loc) => loc.toLowerCase().contains(query.toLowerCase()))
-          .toList();
+      _filteredLocations =
+          _availableLocations
+              .where((loc) => loc.toLowerCase().contains(query.toLowerCase()))
+              .toList();
     });
   }
 

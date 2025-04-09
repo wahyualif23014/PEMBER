@@ -25,8 +25,8 @@ class _TabNavigationScreenState extends State<TabNavigationScreen> {
   ];
 
   final List<Widget> _pages = const [
-    HomeScreen(), 
-    UpcomingScreen(),
+    HomeScreen(),
+    UpcomingTabbarContent(),
     TicketScreen(),
     ProfileScreen(),
   ];
