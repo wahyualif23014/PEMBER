@@ -100,32 +100,32 @@ class ProfileScreen extends StatelessWidget {
               },
             ),
 
-            _buildMenuItem(
-              context,
-              icon: Icons.favorite,
-              title: 'Film Favorit',
-              onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Film Favorit akan segera tersedia'),
-                  ),
-                );
-              },
-            ),
+            // _buildMenuItem(
+            //   context,
+            //   icon: Icons.favorite,
+            //   title: 'Film Favorit',
+            //   onTap: () {
+            //     ScaffoldMessenger.of(context).showSnackBar(
+            //       const SnackBar(
+            //         content: Text('Film Favorit akan segera tersedia'),
+            //       ),
+            //     );
+            //   },
+            // ),
 
-            _buildMenuItem(
-              context,
-              icon: Icons.card_giftcard,
-              title: 'Reward Point',
-              subtitle: '240 points',
-              onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Reward Point akan segera tersedia'),
-                  ),
-                );
-              },
-            ),
+            // _buildMenuItem(
+            //   context,
+            //   icon: Icons.card_giftcard,
+            //   title: 'Reward Point',
+            //   subtitle: '240 points',
+            //   onTap: () {
+            //     ScaffoldMessenger.of(context).showSnackBar(
+            //       const SnackBar(
+            //         content: Text('Reward Point akan segera tersedia'),
+            //       ),
+            //     );
+            //   },
+            // ),
 
             _buildMenuItem(
               context,

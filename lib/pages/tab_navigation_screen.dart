@@ -16,9 +16,8 @@ class TabNavigationScreen extends StatefulWidget {
 class _TabNavigationScreenState extends State<TabNavigationScreen> {
   int _selectedIndex = 0;
 
-  // Judul untuk AppBar di tiap tab selain home
   final List<String> _titles = [
-    'Now Playing',
+    'Home',
     'Coming Soon',
     'My Tickets',
     'Profile',
