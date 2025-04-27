@@ -10,17 +10,14 @@ class WelcomeScreen extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
-          // Background image
           Positioned.fill(
             child: Image.asset('assets/BG1.png', fit: BoxFit.cover),
           ),
 
-          // Overlay dark blur
           Positioned.fill(
             child: Container(color: Colors.black.withValues(alpha: .6)),
           ),
 
-          // Content
           Positioned.fill(
             child: Column(
               children: [
@@ -32,10 +29,7 @@ class WelcomeScreen extends StatelessWidget {
                     const SizedBox(height: 20),
                   ],
                 ),
-
                 const Spacer(),
-
-                // Button section
                 Padding(
                   padding: const EdgeInsets.only(bottom: 100),
                   child: Column(

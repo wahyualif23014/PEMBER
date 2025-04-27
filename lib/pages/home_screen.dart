@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'package:absolute_cinema/themes/warna.dart';
 import 'package:absolute_cinema/widgets/search_bar.dart';
 import 'package:absolute_cinema/widgets/search_location_bar.dart';
-import 'package:absolute_cinema/widgets/header.dart';
+import 'package:absolute_cinema/pages/now_showing.dart';
 import 'package:absolute_cinema/widgets/carousel_slider.dart';
 import 'package:absolute_cinema/pages/movie_grid.dart';
 
@@ -64,18 +64,44 @@ class _HomeScreenState extends State<HomeScreen> {
                         const SearchLocationBar(),
                         const SizedBox(height: 20),
 
-                        CarouselSliderWidget(movies: movies.take(5).toList()),
+                        CarouselSliderWidget(movies: movies.take(6).toList()),
                         const SizedBox(height: 20),
 
-                        const SectionHeader(title: "Now Showing"),
+                        SectionHeader(
+                          title: "Now Showing",
+                          onSeeAll: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => MovieGrid(movies: movies),
+                              ),
+                            );
+                          },
+                        ),
                         const SizedBox(height: 10),
-                        MovieGrid(movies: movies.take(6).toList()),
+                        SizedBox(
+                          height: 430,
+                          child: MovieGrid(movies: movies.take(6).toList()),
+                        ),
 
                         const SizedBox(height: 20),
 
-                        const SectionHeader(title: "Upcoming"),
+                        SectionHeader(
+                          title: "Upcoming",
+                          onSeeAll: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => MovieGrid(movies: movies),
+                              ),
+                            );
+                          },
+                        ),
                         const SizedBox(height: 10),
-                        MovieGrid(movies: movies.skip(6).take(6).toList()),
+                        SizedBox(
+                          height: 430,
+                          child: MovieGrid(movies: movies.take(6).toList()),
+                        ),
 
                         const SizedBox(height: 20),
                       ],

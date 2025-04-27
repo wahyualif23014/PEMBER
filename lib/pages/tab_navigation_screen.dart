@@ -42,14 +42,6 @@ class _TabNavigationScreenState extends State<TabNavigationScreen> {
         centerTitle: true,
         elevation: 0,
         backgroundColor: AppColors.background,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {
-            setState(() {
-              _selectedIndex = 0;
-            });
-          },
-        ),
       ),
       body: _pages[_selectedIndex],
       bottomNavigationBar: CustomNavBar(

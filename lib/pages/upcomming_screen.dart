@@ -1,12 +1,5 @@
 import 'package:flutter/material.dart';
-
-class MovieModel {
-  final String title;
-  final String image;
-  final String rating;
-
-  MovieModel({required this.title, required this.image, required this.rating});
-}
+import 'movie_grid.dart'; 
 
 class UpcomingTabbarContent extends StatefulWidget {
   const UpcomingTabbarContent({super.key});
@@ -19,36 +12,31 @@ class _UpcomingTabbarContentState extends State<UpcomingTabbarContent>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
-  final List<MovieModel> nowShowingMovies = [
-    MovieModel(
-      title: "Naruto The Last",
-      image: "assets/naruto.png",
-      rating: "9.2",
-    ),
-    MovieModel(title: "Demon Slayer", image: "assets/demon.png", rating: "9.0"),
-    MovieModel(
-      title: "Jujutsu Kaisen",
-      image: "assets/jujutsu.png",
-      rating: "9.1",
-    ),
-    MovieModel(title: "Demon Slayer", image: "assets/demon.png", rating: "9.0"),
-    MovieModel(
-      title: "Jujutsu Kaisen",
-      image: "assets/jujutsu.png",
-      rating: "9.1",
-    ),
-    MovieModel(title: "Demon Slayer", image: "assets/demon.png", rating: "9.0"),
-    MovieModel(
-      title: "Jujutsu Kaisen",
-      image: "assets/jujutsu.png",
-      rating: "9.1",
-    ),
-    MovieModel(title: "Demon Slayer", image: "assets/demon.png", rating: "9.0"),
-    MovieModel(
-      title: "Jujutsu Kaisen",
-      image: "assets/jujutsu.png",
-      rating: "9.1",
-    ),
+  final List<Map<String, dynamic>> nowShowingMovies = [
+    {
+      'title': 'Naruto The Last',
+      'poster_path': '/5mNDe5KwH9R0L0DPNt6zDmxPTZ8.jpg',
+    },
+    {
+      'title': 'Demon Slayer',
+      'poster_path': '/7y6w2cReZeGoQ4iMWUUr2Zl6DaZ.jpg',
+    },
+    {
+      'title': 'Jujutsu Kaisen',
+      'poster_path': '/1E5baAaEse26fej7uHcjOgEE2t2.jpg',
+    },
+    {
+      'title': 'One Piece Film Red',
+      'poster_path': '/nLBRD7UPR6GjmWQp6ASAfCTaWKX.jpg',
+    },
+    {
+      'title': 'Bleach: Thousand-Year Blood War',
+      'poster_path': '/1f3qspv64L5FXrRy0MF8X92ieuw.jpg',
+    },
+    {
+      'title': 'My Hero Academia',
+      'poster_path': '/ivE3rIyhpO3fh8F4eHKB4r4aMVM.jpg',
+    },
   ];
 
   @override
@@ -69,7 +57,6 @@ class _UpcomingTabbarContentState extends State<UpcomingTabbarContent>
       length: 2,
       child: Column(
         children: [
-          // Tab bar
           Container(
             decoration: const BoxDecoration(
               border: Border(
@@ -86,33 +73,14 @@ class _UpcomingTabbarContentState extends State<UpcomingTabbarContent>
               tabs: const [Tab(text: 'Now Showing'), Tab(text: 'Upcoming')],
             ),
           ),
-
           Expanded(
             child: TabBarView(
               controller: _tabController,
               children: [
-                LayoutBuilder(
-                  builder: (context, constraints) {
-                    return Padding(
-                      padding: const EdgeInsets.all(12),
-                      child: GridView.builder(
-                        itemCount: nowShowingMovies.length,
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              mainAxisSpacing: 12,
-                              crossAxisSpacing: 12,
-                              childAspectRatio: 0.7, 
-                            ),
-                        itemBuilder: (context, index) {
-                          final movie = nowShowingMovies[index];
-                          return MovieCard(movie: movie);
-                        },
-                      ),
-                    );
-                  },
+                Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: MovieGrid(movies: nowShowingMovies),
                 ),
-
                 const Center(
                   child: Text(
                     "Belum ada film upcoming...",
@@ -127,44 +95,3 @@ class _UpcomingTabbarContentState extends State<UpcomingTabbarContent>
     );
   }
 }
-
-class MovieCard extends StatelessWidget {
-  final MovieModel movie;
-
-  const MovieCard({super.key, required this.movie});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          height: 140,
-          width: double.infinity,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            image: DecorationImage(
-              image: AssetImage(movie.image),
-              fit: BoxFit.cover,
-            ),
-          ),
-        ),
-        const SizedBox(height: 6),
-        Text(
-          movie.title,
-          style: const TextStyle(color: Colors.white),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
-        Text(
-          "Rate ${movie.rating}",
-          style: const TextStyle(color: Colors.white70, fontSize: 12),
-        ),
-      ],
-    );
-  }
-}
-
-
-
-

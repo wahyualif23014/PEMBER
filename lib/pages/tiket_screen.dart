@@ -114,7 +114,6 @@ class Ticket extends StatelessWidget {
                 ),
                 const SizedBox(height: 12),
 
-                // Informasi waktu dan tempat
                 _buildInfoRow(Icons.calendar_today, 'Tanggal', date),
                 const SizedBox(height: 8),
                 _buildInfoRow(Icons.access_time, 'Jam', time),
