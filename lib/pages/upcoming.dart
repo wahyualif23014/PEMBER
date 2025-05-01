@@ -91,13 +91,6 @@ class MovieSection extends StatelessWidget {
                         fit: BoxFit.cover,
                       ),
                     ),
-                    const SizedBox(height: 8),
-                    Text(
-                      movie['title'] ?? '',
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(color: Colors.white),
-                    ),
                   ],
                 ),
               );

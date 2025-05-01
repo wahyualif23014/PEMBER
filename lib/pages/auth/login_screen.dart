@@ -2,11 +2,6 @@ import 'package:flutter/material.dart';
 import 'register_screen.dart';
 import '../../widgets/custom_textfield.dart';
 
-// Navigator.push(
-//               context,
-//               MaterialPageRoute(builder: (context) => DetailScreen()),
-//             );
-//           },
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
