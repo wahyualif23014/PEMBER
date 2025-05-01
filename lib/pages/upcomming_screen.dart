@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'movie_grid.dart'; 
+import 'movie_grid.dart';
 
 class UpcomingTabbarContent extends StatefulWidget {
   const UpcomingTabbarContent({super.key});
@@ -14,14 +14,6 @@ class _UpcomingTabbarContentState extends State<UpcomingTabbarContent>
 
   final List<Map<String, dynamic>> nowShowingMovies = [
     {
-      'title': 'Naruto The Last',
-      'poster_path': '/5mNDe5KwH9R0L0DPNt6zDmxPTZ8.jpg',
-    },
-    {
-      'title': 'Demon Slayer',
-      'poster_path': '/7y6w2cReZeGoQ4iMWUUr2Zl6DaZ.jpg',
-    },
-    {
       'title': 'Jujutsu Kaisen',
       'poster_path': '/1E5baAaEse26fej7uHcjOgEE2t2.jpg',
     },
@@ -33,9 +25,13 @@ class _UpcomingTabbarContentState extends State<UpcomingTabbarContent>
       'title': 'Bleach: Thousand-Year Blood War',
       'poster_path': '/1f3qspv64L5FXrRy0MF8X92ieuw.jpg',
     },
+    
+  ];
+
+  final List<Map<String, dynamic>> upcomingMovies = [
     {
-      'title': 'My Hero Academia',
-      'poster_path': '/ivE3rIyhpO3fh8F4eHKB4r4aMVM.jpg',
+      'title': 'Chainsaw Man',
+      'poster_path': '/npdB6eFzizki0WaZ1OvKcJrWe97.jpg',
     },
   ];
 
@@ -81,11 +77,9 @@ class _UpcomingTabbarContentState extends State<UpcomingTabbarContent>
                   padding: const EdgeInsets.all(12),
                   child: MovieGrid(movies: nowShowingMovies),
                 ),
-                const Center(
-                  child: Text(
-                    "Belum ada film upcoming...",
-                    style: TextStyle(color: Colors.white70),
-                  ),
+                Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: MovieGrid(movies: upcomingMovies),
                 ),
               ],
             ),

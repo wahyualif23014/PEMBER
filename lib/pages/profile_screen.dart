@@ -121,7 +121,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         borderRadius: BorderRadius.circular(20),
                       ),
                     ),
-                    child: const Text('Edit Profil'),
+                    child: const Text('Edit Profile'),
                   ),
                 ],
               ),
@@ -131,7 +131,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
             ProfileMenuItem(
               icon: Icons.history,
-              title: 'Riwayat Pembelian',
+              title: 'Purchase History',
               onTap:
                   () => ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
@@ -142,7 +142,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
             ProfileMenuItem(
               icon: Icons.settings,
-              title: 'Pengaturan',
+              title: 'Setting',
               onTap:
                   () => ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
@@ -153,7 +153,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
             ProfileMenuItem(
               icon: Icons.help_outline,
-              title: 'Bantuan',
+              title: 'Support',
               onTap:
                   () => ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(

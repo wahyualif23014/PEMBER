@@ -15,7 +15,7 @@ class MovieGrid extends StatelessWidget {
         crossAxisCount: 3,
         mainAxisSpacing: 10,
         crossAxisSpacing: 10,
-        childAspectRatio: 0.58, // Diberi ruang vertikal lebih
+        childAspectRatio: 0.58, 
       ),
       itemBuilder: (context, index) {
         final movie = movies[index];
