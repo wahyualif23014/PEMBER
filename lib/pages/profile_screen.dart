@@ -1,18 +1,71 @@
-import 'package:absolute_cinema/themes/warna.dart';
+import 'dart:io';
 import 'package:flutter/material.dart';
-import 'auth/login_screen.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:absolute_cinema/themes/warna.dart';
+import 'package:absolute_cinema/pages/edit_profile.dart';
+import 'package:absolute_cinema/widgets/profile_menu_item.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   final String username;
   final String email;
   final String profileImage;
 
   const ProfileScreen({
     super.key,
-    this.username = " Dewa saja",
+    this.username = "Dewa saja",
     this.email = "sadewa@example.com",
     this.profileImage = "assets/mupy.jpg",
   });
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  late String username;
+  late String email;
+  late String profileImage;
+  final ImagePicker _picker = ImagePicker();
+
+  @override
+  void initState() {
+    super.initState();
+    username = widget.username;
+    email = widget.email;
+    profileImage = widget.profileImage;
+  }
+
+  Future<void> _pickImage() async {
+    final XFile? pickedFile = await _picker.pickImage(
+      source: ImageSource.gallery,
+    );
+    if (pickedFile != null) {
+      setState(() {
+        profileImage = pickedFile.path;
+      });
+    }
+  }
+
+  void _navigateToEditProfile() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder:
+            (context) => EditProfileScreen(
+              username: username,
+              email: email,
+              profileImage: profileImage,
+              onSave: (newUsername, newEmail, newImagePath) {
+                setState(() {
+                  username = newUsername;
+                  email = newEmail;
+                  profileImage = newImagePath;
+                });
+              },
+            ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +74,7 @@ class ProfileScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // Header profil dengan foto dan nama
+            // Header profil
             Container(
               padding: const EdgeInsets.only(top: 30, bottom: 20),
               decoration: const BoxDecoration(
@@ -33,14 +86,14 @@ class ProfileScreen extends StatelessWidget {
               ),
               child: Column(
                 children: [
-                  // Foto profil
-                  CircleAvatar(
-                    radius: 60,
-                    backgroundImage: AssetImage(profileImage),
+                  GestureDetector(
+                    onTap: _pickImage,
+                    child: CircleAvatar(
+                      radius: 60,
+                      backgroundImage: FileImage(File(profileImage)),
+                    ),
                   ),
                   const SizedBox(height: 16),
-
-                  // Nama pengguna
                   Text(
                     username,
                     style: const TextStyle(
@@ -50,16 +103,13 @@ class ProfileScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 8),
-
-                  // Email
                   Text(
                     email,
                     style: const TextStyle(fontSize: 16, color: Colors.grey),
                   ),
                   const SizedBox(height: 20),
-
-                  // Edit Profil
                   ElevatedButton(
+                    onPressed: _navigateToEditProfile,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.amberAccent,
                       foregroundColor: Colors.black,
@@ -71,102 +121,54 @@ class ProfileScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(20),
                       ),
                     ),
-                    onPressed: () {
-                      // Logika untuk mengedit profil
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Edit profil akan segera tersedia'),
-                        ),
-                      );
-                    },
                     child: const Text('Edit Profil'),
                   ),
                 ],
               ),
             ),
 
-            // Menu item
             const SizedBox(height: 20),
-            _buildMenuItem(
-              context,
+
+            ProfileMenuItem(
               icon: Icons.history,
               title: 'Riwayat Pembelian',
-              onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Riwayat Pembelian akan segera tersedia'),
+              onTap:
+                  () => ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Riwayat Pembelian akan segera tersedia'),
+                    ),
                   ),
-                );
-              },
             ),
 
-            // _buildMenuItem(
-            //   context,
-            //   icon: Icons.favorite,
-            //   title: 'Film Favorit',
-            //   onTap: () {
-            //     ScaffoldMessenger.of(context).showSnackBar(
-            //       const SnackBar(
-            //         content: Text('Film Favorit akan segera tersedia'),
-            //       ),
-            //     );
-            //   },
-            // ),
-
-            // _buildMenuItem(
-            //   context,
-            //   icon: Icons.card_giftcard,
-            //   title: 'Reward Point',
-            //   subtitle: '240 points',
-            //   onTap: () {
-            //     ScaffoldMessenger.of(context).showSnackBar(
-            //       const SnackBar(
-            //         content: Text('Reward Point akan segera tersedia'),
-            //       ),
-            //     );
-            //   },
-            // ),
-
-            _buildMenuItem(
-              context,
+            ProfileMenuItem(
               icon: Icons.settings,
               title: 'Pengaturan',
-              onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Pengaturan akan segera tersedia'),
+              onTap:
+                  () => ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Pengaturan akan segera tersedia'),
+                    ),
                   ),
-                );
-              },
             ),
 
-            _buildMenuItem(
-              context,
+            ProfileMenuItem(
               icon: Icons.help_outline,
               title: 'Bantuan',
-              onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Bantuan akan segera tersedia')),
-                );
-              },
+              onTap:
+                  () => ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Bantuan akan segera tersedia'),
+                    ),
+                  ),
             ),
 
             const SizedBox(height: 20),
 
-            // Tombol logout
+            // Tombol Logout
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red[400],
-                  foregroundColor: Colors.white,
-                  minimumSize: const Size(double.infinity, 50),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
                 onPressed: () {
-                  // Logika untuk logout
                   showDialog(
                     context: context,
                     builder:
@@ -190,11 +192,11 @@ class ProfileScreen extends StatelessWidget {
                             ),
                             TextButton(
                               onPressed: () {
-                                Navigator.pushReplacement(
+                                // ganti ke LoginScreen jika sudah tersedia
+                                Navigator.pop(context);
+                                Navigator.pushReplacementNamed(
                                   context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const LoginScreen(),
-                                  ),
+                                  '/login',
                                 );
                               },
                               child: const Text(
@@ -206,49 +208,25 @@ class ProfileScreen extends StatelessWidget {
                         ),
                   );
                 },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red[400],
+                  foregroundColor: Colors.white,
+                  minimumSize: const Size(double.infinity, 50),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
                 child: const Text('Logout'),
               ),
             ),
-            const SizedBox(height: 20),
 
-            // Versi aplikasi
+            const SizedBox(height: 20),
             const Text(
               'Versi 1.0.0',
               style: TextStyle(color: Colors.grey, fontSize: 12),
             ),
             const SizedBox(height: 20),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildMenuItem(
-    BuildContext context, {
-    required IconData icon,
-    required String title,
-    String? subtitle,
-    required VoidCallback onTap,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-      child: Card(
-        color: const Color(0xFF252525),
-        elevation: 2,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        child: ListTile(
-          leading: Icon(icon, color: Colors.amberAccent),
-          title: Text(title, style: const TextStyle(color: Colors.white)),
-          subtitle:
-              subtitle != null
-                  ? Text(subtitle, style: const TextStyle(color: Colors.grey))
-                  : null,
-          trailing: const Icon(
-            Icons.arrow_forward_ios,
-            color: Colors.grey,
-            size: 16,
-          ),
-          onTap: onTap,
         ),
       ),
     );
