@@ -1,10 +1,11 @@
+import 'package:absolute_cinema/api_links/all_api.dart';
+import 'package:absolute_cinema/widgets/section_header.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:absolute_cinema/themes/warna.dart';
 import 'package:absolute_cinema/widgets/search_bar.dart';
 import 'package:absolute_cinema/widgets/search_location_bar.dart';
-import 'package:absolute_cinema/pages/now_showing.dart';
 import 'package:absolute_cinema/widgets/carousel_slider.dart';
 import 'package:absolute_cinema/pages/movie_grid.dart';
 
@@ -17,7 +18,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   List movies = [];
-  final String apiKey = '08c65abc73be4c1cc0e0e39cd1b19141';
 
   @override
   void initState() {
@@ -26,11 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> fetchMovies() async {
-    final response = await http.get(
-      Uri.parse(
-        'https://api.themoviedb.org/3/movie/now_playing?api_key=$apiKey',
-      ),
-    );
+    final response = await http.get(Uri.parse(nowplayingmoviesurl));
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);

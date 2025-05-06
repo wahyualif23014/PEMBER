@@ -1,4 +1,4 @@
-import 'package:absolute_cinema/apikey/apikey.dart';
+import 'package:absolute_cinema/api_key/api_key.dart';
 
 String trendingweekurl =
     'https://api.themoviedb.org/3/trending/all/week?api_key=$apikey';

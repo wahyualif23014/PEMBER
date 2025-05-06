@@ -1,4 +1,8 @@
+import 'package:absolute_cinema/models/user_model.dart';
+import 'package:absolute_cinema/pages/home_screen.dart';
+import 'package:absolute_cinema/repository/user_repository/user_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import '../../widgets/custom_textfield.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -82,7 +86,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
         _emailError == null &&
         _passwordError == null &&
         _confirmPasswordError == null) {
-      Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+      final user = UserModel(
+        username: _usernameController.text,
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+
+      UserRepository.instance.createUser(user);
+
+      Get.to(() => const HomeScreen());
     }
   }
 

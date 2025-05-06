@@ -25,7 +25,6 @@ class _UpcomingTabbarContentState extends State<UpcomingTabbarContent>
       'title': 'Bleach: Thousand-Year Blood War',
       'poster_path': '/1f3qspv64L5FXrRy0MF8X92ieuw.jpg',
     },
-    
   ];
 
   final List<Map<String, dynamic>> upcomingMovies = [

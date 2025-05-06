@@ -83,7 +83,7 @@ class _CustomTextFieldState extends State<CustomTextField>
                     ),
                   ],
                 ),
-                child: TextField(
+                child: TextFormField(
                   controller: widget.controller,
                   onChanged: widget.onChanged,
                   keyboardType: widget.keyboardType,
