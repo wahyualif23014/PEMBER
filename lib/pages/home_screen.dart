@@ -61,7 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         const SizedBox(height: 20),
 
                         CarouselSliderWidget(movies: movies.take(6).toList()),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 30),
 
                         SectionHeader(
                           title: "Now Showing",
@@ -69,15 +69,29 @@ class _HomeScreenState extends State<HomeScreen> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (_) => MovieGrid(movies: movies),
+                                builder:
+                                    (_) => Scaffold(
+                                      backgroundColor: Colors.black,
+                                      appBar: AppBar(
+                                        title: const Text("Now Showing"),
+                                      ),
+                                      body: MovieGrid(
+                                        movies: movies,
+                                        source: "now_showing",
+                                      ),
+                                    ),
                               ),
                             );
                           },
                         ),
-                        const SizedBox(height: 10),
+                        const SizedBox(height: 20),
+
                         SizedBox(
-                          height: 430,
-                          child: MovieGrid(movies: movies.take(6).toList()),
+                          height: 410,
+                          child: MovieGrid(
+                            movies: movies.take(6).toList(),
+                            source: "now_showing",
+                          ),
                         ),
 
                         const SizedBox(height: 20),
@@ -88,18 +102,30 @@ class _HomeScreenState extends State<HomeScreen> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (_) => MovieGrid(movies: movies),
+                                builder:
+                                    (_) => Scaffold(
+                                      backgroundColor: Colors.black,
+                                      appBar: AppBar(
+                                        title: const Text("Upcoming"),
+                                      ),
+                                      body: MovieGrid(
+                                        movies: movies,
+                                        source: "upcoming",
+                                      ),
+                                    ),
                               ),
                             );
                           },
                         ),
-                        const SizedBox(height: 10),
-                        SizedBox(
-                          height: 430,
-                          child: MovieGrid(movies: movies.take(6).toList()),
-                        ),
-
                         const SizedBox(height: 20),
+
+                        SizedBox(
+                          height: 410,
+                          child: MovieGrid(
+                            movies: movies.take(6).toList(),
+                            source: "upcoming",
+                          ),
+                        ),
                       ],
                     ),
                   ),

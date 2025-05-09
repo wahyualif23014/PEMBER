@@ -1,9 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:absolute_cinema/pages/movieDetail_screen.dart';
+import 'package:absolute_cinema/pages/UpcommingDetail.dart';
 
 class MovieGrid extends StatelessWidget {
   final List movies;
+  final void Function(Map movie)? onMovieTap;
+  final String source;
 
-  const MovieGrid({super.key, required this.movies});
+  const MovieGrid({
+    super.key,
+    required this.movies,
+    this.onMovieTap,
+    required this.source,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -15,49 +24,68 @@ class MovieGrid extends StatelessWidget {
         crossAxisCount: 3,
         mainAxisSpacing: 10,
         crossAxisSpacing: 10,
-        childAspectRatio: 0.58, 
+        childAspectRatio: 0.58,
       ),
       itemBuilder: (context, index) {
         final movie = movies[index];
 
-        return LayoutBuilder(
-          builder: (context, constraints) {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  height: constraints.maxHeight * 0.7, // 70% untuk poster
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: Image.network(
-                      'https://image.tmdb.org/t/p/w500${movie['poster_path']}',
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) =>
-                          const Icon(Icons.error, color: Colors.red),
-                    ),
-                  ),
+        return GestureDetector(
+          onTap: () {
+            if (source == "now_showing") {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => MovieDetailScreen(movie: movie),
                 ),
-                const SizedBox(height: 4),
-                Flexible(
-                  child: Text(
-                    movie['title'] ?? 'Title',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 11,
-                      fontWeight: FontWeight.w500,
-                    ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
+              );
+            } else if (source == "upcoming") {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => UpcomingDetailScreen(movie: movie),
                 ),
-                const SizedBox(height: 2),
-                const Text(
-                  "Rate: 10/10",
-                  style: TextStyle(color: Colors.white54, fontSize: 10),
-                ),
-              ],
-            );
+              );
+            }
           },
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: constraints.maxHeight * 0.7,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: Image.network(
+                        'https://image.tmdb.org/t/p/w500${movie['poster_path']}',
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) =>
+                            const Icon(Icons.error, color: Colors.red),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Flexible(
+                    child: Text(
+                      movie['title'] ?? 'Title',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w500,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  const Text(
+                    "Rate: 10/10",
+                    style: TextStyle(color: Colors.white54, fontSize: 10),
+                  ),
+                ],
+              );
+            },
+          ),
         );
       },
     );

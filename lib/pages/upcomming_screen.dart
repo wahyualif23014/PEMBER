@@ -74,11 +74,11 @@ class _UpcomingTabbarContentState extends State<UpcomingTabbarContent>
               children: [
                 Padding(
                   padding: const EdgeInsets.all(12),
-                  child: MovieGrid(movies: nowShowingMovies),
+                  child: MovieGrid(movies: nowShowingMovies, source: 'now_showing'),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(12),
-                  child: MovieGrid(movies: upcomingMovies),
+                  child: MovieGrid(movies: upcomingMovies, source: 'upcoming'),
                 ),
               ],
             ),
