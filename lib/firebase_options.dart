@@ -85,4 +85,5 @@ class DefaultFirebaseOptions {
     storageBucket: 'movie-app-6418e.firebasestorage.app',
     measurementId: 'G-08RSTFSV09',
   );
+
 }

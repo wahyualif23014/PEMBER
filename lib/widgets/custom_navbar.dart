@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../themes/warna.dart';
+import '../themes/colors.dart';
 
 class CustomNavBar extends StatelessWidget {
   final int selectedIndex;

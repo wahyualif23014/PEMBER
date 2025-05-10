@@ -1,9 +1,9 @@
-import 'package:absolute_cinema/pages/home_screen.dart';
+import 'package:absolute_cinema/screens/home_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:absolute_cinema/themes/warna.dart';
-import 'package:absolute_cinema/pages/upcomming_screen.dart';
-import 'package:absolute_cinema/pages/tiket_screen.dart';
-import 'package:absolute_cinema/pages/profile_screen.dart';
+import 'package:absolute_cinema/themes/colors.dart';
+import 'package:absolute_cinema/screens/upcomming_screen.dart';
+import 'package:absolute_cinema/screens/tiket_screen.dart';
+import 'package:absolute_cinema/screens/profile_screen.dart';
 import '../widgets/custom_navbar.dart';
 
 class TabNavigationScreen extends StatefulWidget {

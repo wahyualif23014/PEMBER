@@ -1,9 +1,8 @@
-import 'package:absolute_cinema/repository/user_repository/user_repository.dart';
 import 'package:absolute_cinema/screens/tab_navigation_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:absolute_cinema/pages/auth/login_screen.dart';
-import 'package:absolute_cinema/pages/auth/register_screen.dart';
-import "package:absolute_cinema/pages/auth/welcome_screen.dart";
+import 'package:absolute_cinema/screens/auth/login_screen.dart';
+import 'package:absolute_cinema/screens/auth/register_screen.dart';
+import "package:absolute_cinema/screens/auth/welcome_screen.dart";
 import 'package:get/get.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -12,7 +11,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  Get.put(UserRepository());
   runApp(const MyApp());
 }
 
@@ -25,7 +23,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Absolute Cinema',
       theme: ThemeData.dark(),
-      initialRoute: '/register',
+      initialRoute: '/home',
       routes: {
         '/': (context) => const WelcomeScreen(),
         '/login': (context) => const LoginScreen(),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:absolute_cinema/pages/movieDetail_screen.dart';
-import 'package:absolute_cinema/pages/UpcommingDetail.dart';
+import 'package:absolute_cinema/screens/movieDetail_screen.dart';
+import 'package:absolute_cinema/screens/UpcommingDetail.dart';
 
 class MovieGrid extends StatelessWidget {
   final List movies;
@@ -31,20 +31,24 @@ class MovieGrid extends StatelessWidget {
 
         return GestureDetector(
           onTap: () {
-            if (source == "now_showing") {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => MovieDetailScreen(movie: movie),
-                ),
-              );
-            } else if (source == "upcoming") {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => UpcomingDetailScreen(movie: movie),
-                ),
-              );
+            if (onMovieTap != null) {
+              onMovieTap!(movie);
+            } else {
+              if (source == "now_showing") {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MovieDetailScreen(movie: movie),
+                  ),
+                );
+              } else if (source == "upcoming") {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => UpcomingDetailScreen(movie: movie),
+                  ),
+                );
+              }
             }
           },
           child: LayoutBuilder(

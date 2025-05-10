@@ -1,8 +1,8 @@
 import 'dart:io';
-import 'package:absolute_cinema/pages/edit_profile_screen.dart';
+import 'package:absolute_cinema/screens/edit_profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:absolute_cinema/themes/warna.dart';
+import 'package:absolute_cinema/themes/colors.dart';
 import 'package:absolute_cinema/widgets/profile_menu_item.dart';
 
 class ProfileScreen extends StatefulWidget {

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:absolute_cinema/themes/warna.dart';
+import 'package:absolute_cinema/themes/colors.dart';
 
 class SectionHeader extends StatelessWidget {
   final String title;

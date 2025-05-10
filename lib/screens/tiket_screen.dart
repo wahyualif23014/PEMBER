@@ -1,4 +1,4 @@
-import 'package:absolute_cinema/themes/warna.dart';
+import 'package:absolute_cinema/themes/colors.dart';
 import 'package:flutter/material.dart';
 
 class TicketScreen extends StatelessWidget {

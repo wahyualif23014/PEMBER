@@ -1,13 +1,15 @@
 import 'package:absolute_cinema/api_links/all_api.dart';
 import 'package:absolute_cinema/widgets/section_header.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:absolute_cinema/themes/warna.dart';
+import 'package:absolute_cinema/themes/colors.dart';
 import 'package:absolute_cinema/widgets/search_bar.dart';
 import 'package:absolute_cinema/widgets/search_location_bar.dart';
 import 'package:absolute_cinema/widgets/carousel_slider.dart';
-import 'package:absolute_cinema/pages/movie_grid.dart';
+import 'package:absolute_cinema/screens/movie_grid.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -17,12 +19,40 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  String? username;
   List movies = [];
+
+  Future<void> fetchUsername() async {
+  final user = FirebaseAuth.instance.currentUser;
+  if (user == null) {
+    print("User belum login");
+    return;
+  }
+  final uid = user.uid;
+  try {
+    final userDoc = await FirebaseFirestore.instance
+        .collection("users")
+        .doc(uid)
+        .get();
+
+    if (userDoc.exists && userDoc.data() != null) {
+      setState(() {
+        username = userDoc['username'];
+      });
+    } else {
+      print("Dokumen user tidak ditemukan.");
+    }
+  } catch (e) {
+    print("Terjadi error saat mengambil username: $e");
+  }
+}
+
 
   @override
   void initState() {
     super.initState();
     fetchMovies();
+    fetchUsername();
   }
 
   Future<void> fetchMovies() async {
@@ -64,7 +94,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         const SizedBox(height: 30),
 
                         SectionHeader(
-                          title: "Now Showing",
+                          title: "$username",
                           onSeeAll: () {
                             Navigator.push(
                               context,

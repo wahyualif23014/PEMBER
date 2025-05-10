@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'movie_grid.dart';
+import 'package:absolute_cinema/screens/movie_grid.dart';
 
 class UpcomingTabbarContent extends StatefulWidget {
   const UpcomingTabbarContent({super.key});
