@@ -1,7 +1,5 @@
 import 'package:absolute_cinema/api_links/all_api.dart';
 import 'package:absolute_cinema/widgets/section_header.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -19,37 +17,12 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  String? username;
   List movies = [];
-
-  Future<void> fetchUsername() async {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user == null) {
-      print("User belum login");
-      return;
-    }
-    final uid = user.uid;
-    try {
-      final userDoc =
-          await FirebaseFirestore.instance.collection("users").doc(uid).get();
-
-      if (userDoc.exists && userDoc.data() != null) {
-        setState(() {
-          username = userDoc['username'];
-        });
-      } else {
-        print("Dokumen user tidak ditemukan.");
-      }
-    } catch (e) {
-      print("Terjadi error saat mengambil username: $e");
-    }
-  }
 
   @override
   void initState() {
     super.initState();
     fetchMovies();
-    fetchUsername();
   }
 
   Future<void> fetchMovies() async {
@@ -91,7 +64,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         const SizedBox(height: 30),
 
                         SectionHeader(
-                          title: "$username",
+                          title: "Now Showing",
                           onSeeAll: () {
                             Navigator.push(
                               context,
@@ -113,12 +86,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         const SizedBox(height: 20),
 
-                        SizedBox(
-                          height: 410,
-                          child: MovieGrid(
-                            movies: movies.take(6).toList(),
-                            source: "now_showing",
-                          ),
+                        MovieGrid(
+                          movies: movies.take(6).toList(),
+                          source: "now_showing",
                         ),
 
                         const SizedBox(height: 20),
@@ -146,12 +116,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         const SizedBox(height: 20),
 
-                        SizedBox(
-                          height: 410,
-                          child: MovieGrid(
-                            movies: movies.take(6).toList(),
-                            source: "upcoming",
-                          ),
+                        MovieGrid(
+                          movies: movies.take(6).toList(),
+                          source: "upcoming",
                         ),
                       ],
                     ),
