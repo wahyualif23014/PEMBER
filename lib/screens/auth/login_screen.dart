@@ -1,4 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:absolute_cinema/services/auth_service.dart';
 import 'register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -14,6 +17,10 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+
+  String? _emailError;
+  String? _passwordError;
+  String? _loginError;
 
   String? _validateEmail(String? value) {
     if (value == null || value.isEmpty) {
@@ -33,9 +40,42 @@ class _LoginScreenState extends State<LoginScreen> {
     return null;
   }
 
-  void _submitForm() {
-    if (_formKey.currentState!.validate()) {
-      Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+  void _submitForm() async {
+    setState(() {
+      _emailError = _validateEmail(_emailController.text);
+      _passwordError = _validatePassword(_passwordController.text);
+      _loginError = null;
+    });
+
+    if (_emailError == null && _passwordError == null) {
+      try {
+        await authService.value.signIn(
+          email: _emailController.text.trim(),
+          password: _passwordController.text.trim(),
+        );
+
+        Get.offAllNamed('/home');
+      } on FirebaseAuthException catch (e) {
+        setState(() {
+          if (e.code == 'user-not-found') {
+            _loginError = 'No user found for that email.';
+          } else if (e.code == 'wrong-password') {
+            _loginError = 'Incorrect password.';
+          } else if (e.code == 'invalid-email') {
+            _loginError = 'Invalid email address.';
+          } else if (e.code == 'user-disabled') {
+            _loginError = 'This account has been disabled.';
+          } else if (e.code == 'invalid-credential') {
+            _loginError = 'Email atau password salah.';
+          } else {
+            _loginError = 'Login failed: ${e.message}';
+          }
+        });
+      } catch (e) {
+        setState(() {
+          _loginError = 'An unexpected error occurred.';
+        });
+      }
     }
   }
 
@@ -72,117 +112,82 @@ class _LoginScreenState extends State<LoginScreen> {
                 Image.asset('assets/newlogo.png', height: 100),
                 const SizedBox(height: 50),
 
+                // EMAIL FIELD
                 TextFormField(
                   controller: _emailController,
-                  validator: _validateEmail,
                   style: const TextStyle(color: Colors.white),
-                  decoration: InputDecoration(
-                    prefixIcon: const Icon(
-                      Icons.email,
-                      color: Colors.amberAccent,
-                    ),
+                  onChanged:
+                      (val) => setState(() {
+                        _emailError = _validateEmail(val);
+                      }),
+                  decoration: _buildInputDecoration(
                     hintText: 'Email',
-                    hintStyle: const TextStyle(
-                      color: Color.fromARGB(137, 216, 216, 216),
-                    ),
-                    filled: true,
-                    fillColor: const Color(0xFF2C2C2C),
-                    contentPadding: const EdgeInsets.symmetric(
-                      vertical: 16,
-                      horizontal: 20,
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30),
-                      borderSide: BorderSide.none,
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30),
-                      borderSide: const BorderSide(color: Colors.amberAccent),
-                    ),
-                    errorBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30),
-                      borderSide: const BorderSide(
-                        color: Colors.redAccent,
-                        width: 2,
-                      ),
-                    ),
-                    focusedErrorBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30),
-                      borderSide: const BorderSide(
-                        color: Colors.redAccent,
-                        width: 2,
-                      ),
-                    ),
-                    errorStyle: const TextStyle(
-                      color: Colors.redAccent,
-                      fontSize: 12,
-                    ),
+                    icon: Icons.email,
                   ),
                 ),
+                if (_emailError != null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 6),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        _emailError!,
+                        style: const TextStyle(
+                          color: Colors.redAccent,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ),
+                  ),
                 const SizedBox(height: 20),
 
+                // PASSWORD FIELD
                 TextFormField(
                   controller: _passwordController,
-                  validator: _validatePassword,
                   obscureText: obscurePassword,
                   style: const TextStyle(color: Colors.white),
-                  decoration: InputDecoration(
-                    prefixIcon: const Icon(
-                      Icons.lock,
-                      color: Colors.amberAccent,
-                    ),
+                  onChanged:
+                      (val) => setState(() {
+                        _passwordError = _validatePassword(val);
+                      }),
+                  decoration: _buildInputDecoration(
                     hintText: 'Password',
-                    hintStyle: const TextStyle(
-                      color: Color.fromARGB(137, 216, 216, 216),
-                    ),
-                    filled: true,
-                    fillColor: const Color(0xFF2C2C2C),
-                    contentPadding: const EdgeInsets.symmetric(
-                      vertical: 16,
-                      horizontal: 20,
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30),
-                      borderSide: BorderSide.none,
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30),
-                      borderSide: const BorderSide(color: Colors.amberAccent),
-                    ),
-                    errorBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30),
-                      borderSide: const BorderSide(
-                        color: Colors.redAccent,
-                        width: 2,
-                      ),
-                    ),
-                    focusedErrorBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30),
-                      borderSide: const BorderSide(
-                        color: Colors.redAccent,
-                        width: 2,
-                      ),
-                    ),
-                    errorStyle: const TextStyle(
-                      color: Colors.redAccent,
-                      fontSize: 12,
-                    ),
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        obscurePassword
-                            ? Icons.visibility_off
-                            : Icons.visibility,
-                        color: Colors.amberAccent,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          obscurePassword = !obscurePassword;
-                        });
-                      },
-                    ),
+                    icon: Icons.lock,
+                    isPassword: true,
                   ),
                 ),
-                const SizedBox(height: 35),
+                if (_passwordError != null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 6),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        _passwordError!,
+                        style: const TextStyle(
+                          color: Colors.redAccent,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                // LOGIN ERROR
+                if (_loginError != null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        _loginError!,
+                        style: const TextStyle(
+                          color: Colors.redAccent,
+                          fontSize: 13,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                const SizedBox(height: 30),
 
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
@@ -203,7 +208,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: 25),
 
-                // Hanya tulisan "Sign Up" yang bisa diklik
                 RichText(
                   text: TextSpan(
                     children: [
@@ -233,13 +237,57 @@ class _LoginScreenState extends State<LoginScreen> {
                     ],
                   ),
                 ),
-
-                SizedBox(height: MediaQuery.of(context).viewInsets.bottom),
               ],
             ),
           ),
         ),
       ),
+    );
+  }
+
+  InputDecoration _buildInputDecoration({
+    required String hintText,
+    required IconData icon,
+    bool isPassword = false,
+  }) {
+    return InputDecoration(
+      prefixIcon: Icon(icon, color: Colors.amberAccent),
+      hintText: hintText,
+      hintStyle: const TextStyle(color: Color.fromARGB(137, 216, 216, 216)),
+      filled: true,
+      fillColor: const Color(0xFF2C2C2C),
+      contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(30),
+        borderSide: BorderSide.none,
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(30),
+        borderSide: const BorderSide(color: Colors.amberAccent),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(30),
+        borderSide: const BorderSide(color: Colors.redAccent, width: 2),
+      ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(30),
+        borderSide: const BorderSide(color: Colors.redAccent, width: 2),
+      ),
+      errorStyle: const TextStyle(color: Colors.redAccent, fontSize: 12),
+      suffixIcon:
+          isPassword
+              ? IconButton(
+                icon: Icon(
+                  obscurePassword ? Icons.visibility_off : Icons.visibility,
+                  color: Colors.amberAccent,
+                ),
+                onPressed: () {
+                  setState(() {
+                    obscurePassword = !obscurePassword;
+                  });
+                },
+              )
+              : null,
     );
   }
 }

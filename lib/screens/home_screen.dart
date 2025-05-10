@@ -23,30 +23,27 @@ class _HomeScreenState extends State<HomeScreen> {
   List movies = [];
 
   Future<void> fetchUsername() async {
-  final user = FirebaseAuth.instance.currentUser;
-  if (user == null) {
-    print("User belum login");
-    return;
-  }
-  final uid = user.uid;
-  try {
-    final userDoc = await FirebaseFirestore.instance
-        .collection("users")
-        .doc(uid)
-        .get();
-
-    if (userDoc.exists && userDoc.data() != null) {
-      setState(() {
-        username = userDoc['username'];
-      });
-    } else {
-      print("Dokumen user tidak ditemukan.");
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      print("User belum login");
+      return;
     }
-  } catch (e) {
-    print("Terjadi error saat mengambil username: $e");
-  }
-}
+    final uid = user.uid;
+    try {
+      final userDoc =
+          await FirebaseFirestore.instance.collection("users").doc(uid).get();
 
+      if (userDoc.exists && userDoc.data() != null) {
+        setState(() {
+          username = userDoc['username'];
+        });
+      } else {
+        print("Dokumen user tidak ditemukan.");
+      }
+    } catch (e) {
+      print("Terjadi error saat mengambil username: $e");
+    }
+  }
 
   @override
   void initState() {
