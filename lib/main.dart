@@ -1,4 +1,3 @@
-import 'package:absolute_cinema/repository/user_repository/user_repository.dart';
 import 'package:absolute_cinema/screens/tab_navigation_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:absolute_cinema/screens/auth/login_screen.dart';
@@ -12,7 +11,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  Get.put(UserRepository());
   runApp(const MyApp());
 }
 
