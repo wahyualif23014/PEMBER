@@ -15,7 +15,7 @@ class MovieGrid extends StatelessWidget {
         crossAxisCount: 3,
         mainAxisSpacing: 10,
         crossAxisSpacing: 10,
-        childAspectRatio: 0.58, 
+        childAspectRatio: 0.58,
       ),
       itemBuilder: (context, index) {
         final movie = movies[index];
@@ -26,14 +26,15 @@ class MovieGrid extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(
-                  height: constraints.maxHeight * 0.7, // 70% untuk poster
+                  height: constraints.maxHeight * 0.7,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(8),
                     child: Image.network(
                       'https://image.tmdb.org/t/p/w500${movie['poster_path']}',
                       fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) =>
-                          const Icon(Icons.error, color: Colors.red),
+                      errorBuilder:
+                          (context, error, stackTrace) =>
+                              const Icon(Icons.error, color: Colors.red),
                     ),
                   ),
                 ),
