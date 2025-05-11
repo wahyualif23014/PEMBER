@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:absolute_cinema/screens/movieDetail_screen.dart';
 import 'package:absolute_cinema/screens/UpcommingDetail.dart';
+import 'package:absolute_cinema/models/movie_model.dart';
 import 'package:absolute_cinema/themes/colors.dart';
+
 
 class MovieGrid extends StatelessWidget {
   final List movies;
@@ -19,18 +21,22 @@ class MovieGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     return GridView.builder(
       itemCount: movies.length,
-      physics: const NeverScrollableScrollPhysics(),
+      physics: const ScrollPhysics(),
       shrinkWrap: true,
       padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
         crossAxisSpacing: 16,
         mainAxisSpacing: 24,
-        childAspectRatio: 0.55, // Adjusted for better proportions
+        childAspectRatio: 0.55,
       ),
       itemBuilder: (context, index) {
         final movie = movies[index];
-        return GestureDetector(
+        return AnimatedOpacity(
+        opacity: 1.0,
+        duration: Duration(milliseconds: 500),
+        
+        child:  GestureDetector(
           onTap: () {
             if (onMovieTap != null) {
               onMovieTap!(movie);
@@ -38,11 +44,15 @@ class MovieGrid extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder:
-                      (context) =>
-                          source == "now_showing"
-                              ? MovieDetailScreen(movie: movie)
-                              : UpcomingDetailScreen(movie: movie),
+                  builder: (context) {
+                    final parsedMovie = Movie.fromJson(
+                      movie,
+                      movie['id'].toString(),
+                    );
+                    return source == "now_showing"
+                        ? MovieDetailScreen(movie: parsedMovie)
+                        : UpcomingDetailScreen(movie: parsedMovie);
+                  },
                 ),
               );
             }
@@ -50,7 +60,6 @@ class MovieGrid extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Poster container with shadow and rounded corners
               Expanded(
                 child: Container(
                   decoration: BoxDecoration(
@@ -99,28 +108,26 @@ class MovieGrid extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 10),
-              // Movie title with adequate space
               SizedBox(
-                height: 20, // Increased height for better text display
+                height: 20,
                 child: Text(
                   movie['title'] ?? 'Untitled',
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
-                    height: 1.2, // Adjusted line height
+                    height: 1.2,
                   ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
-              // Rating with consistent style
               Row(
                 children: [
                   const Icon(Icons.star, color: Colors.amber, size: 14),
                   const SizedBox(width: 4),
                   Text(
-                    "10/10",
+                    "${movie['vote_average']?.toStringAsFixed(1) ?? '0.0'}/10",
                     style: TextStyle(
                       color: Colors.white.withOpacity(0.8),
                       fontSize: 12,
@@ -131,6 +138,7 @@ class MovieGrid extends StatelessWidget {
               ),
             ],
           ),
+        ),
         );
       },
     );

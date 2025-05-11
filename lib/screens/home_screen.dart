@@ -41,90 +41,157 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: AppColors.background,
       body: SafeArea(
-        child:
-            movies.isEmpty
-                ? const Center(
-                  child: CircularProgressIndicator(color: AppColors.primary),
-                )
-                : SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: 16),
-                        const SearchBarApp(),
-                        const SizedBox(height: 10),
-                        const SearchLocationBar(),
-                        const SizedBox(height: 20),
+        child: movies.isEmpty
+            ? SkeletonHomeLoader()
+            : CustomScrollView(
+                physics: const BouncingScrollPhysics(),
+                slivers: [
+                  const SliverToBoxAdapter(child: SearchBarApp()),
+                  const SliverToBoxAdapter(child: SizedBox(height: 20)),
+                  const SliverToBoxAdapter(child: SearchLocationBar()),
+                  const SliverToBoxAdapter(child: SizedBox(height: 20)),
 
-                        CarouselSliderWidget(movies: movies.take(6).toList()),
-                        const SizedBox(height: 30),
-
-                        SectionHeader(
-                          title: "Now Showing",
-                          onSeeAll: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder:
-                                    (_) => Scaffold(
-                                      backgroundColor: Colors.black,
-                                      appBar: AppBar(
-                                        title: const Text("Now Showing"),
-                                      ),
-                                      body: MovieGrid(
-                                        movies: movies,
-                                        source: "now_showing",
-                                      ),
-                                    ),
-                              ),
-                            );
-                          },
-                        ),
-                        const SizedBox(height: 20),
-
-                        MovieGrid(
-                          movies: movies.take(6).toList(),
-                          source: "now_showing",
-                        ),
-
-                        const SizedBox(height: 20),
-
-                        SectionHeader(
-                          title: "Upcoming",
-                          onSeeAll: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder:
-                                    (_) => Scaffold(
-                                      backgroundColor: Colors.black,
-                                      appBar: AppBar(
-                                        title: const Text("Upcoming"),
-                                      ),
-                                      body: MovieGrid(
-                                        movies: movies,
-                                        source: "upcoming",
-                                      ),
-                                    ),
-                              ),
-                            );
-                          },
-                        ),
-                        const SizedBox(height: 20),
-
-                        MovieGrid(
-                          movies: movies.take(6).toList(),
-                          source: "upcoming",
-                        ),
-                      ],
+                    SliverToBoxAdapter(
+                      child: CarouselSliderWidget(
+                        movies: movies.take(6).toList(),
+                      ),
                     ),
-                  ),
+                    const SliverToBoxAdapter(child: SizedBox(height: 30)),
+
+                    SliverToBoxAdapter(
+                      child: SectionHeader(
+                        title: "Now Showing",
+                        onSeeAll: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder:
+                                  (_) => Scaffold(
+                                    backgroundColor: Colors.black,
+                                    appBar: AppBar(
+                                      title: const Text("Now Showing"),
+                                    ),
+                                    body: MovieGrid(
+                                      movies: movies,
+                                      source: "now_showing",
+                                    ),
+                                  ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    const SliverToBoxAdapter(child: SizedBox(height: 20)),
+
+                    SliverToBoxAdapter(
+                      child: MovieGrid(
+                        movies: movies.take(6).toList(),
+                        source: "now_showing",
+                      ),
+                    ),
+                    const SliverToBoxAdapter(child: SizedBox(height: 20)),
+
+                    SliverToBoxAdapter(
+                      child: SectionHeader(
+                        title: "Upcoming",
+                        // Removed the undefined parameter
+                        onSeeAll: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder:
+                                  (_) => Scaffold(
+                                    backgroundColor: Colors.black,
+                                    appBar: AppBar(
+                                      title: const Text("Upcoming"),
+                                    ),
+                                    body: MovieGrid(
+                                      movies: movies,
+                                      source: "upcoming",
+                                    ),
+                                  ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    const SliverToBoxAdapter(child: SizedBox(height: 20)),
+
+                    SliverToBoxAdapter(
+                      child: MovieGrid(
+                        movies: movies.take(6).toList(),
+                        source: "upcoming",
+                      ),
+                    ),
+                  ],
                 ),
       ),
+    );
+  }
+}
+
+class SkeletonHomeLoader extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return CustomScrollView(
+      physics: const BouncingScrollPhysics(),
+      slivers: [
+        const SliverToBoxAdapter(child: SizedBox(height: 16)),
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Column(
+              children: [
+                Container(height: 40, color: AppColors.skeletonDark),
+                const SizedBox(height: 10),
+                Container(height: 30, color: AppColors.skeletonLight),
+              ],
+            ),
+          ),
+        ),
+        const SliverToBoxAdapter(child: SizedBox(height: 20)),
+        SliverToBoxAdapter(
+          child: Container(
+            height: 180,
+            margin: const EdgeInsets.symmetric(horizontal: 16),
+            color: AppColors.skeletonDark,
+          ),
+        ),
+        const SliverToBoxAdapter(child: SizedBox(height: 30)),
+        ...List.generate(
+          2,
+          (index) => SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    height: 20,
+                    width: 120,
+                    color: AppColors.skeletonLight,
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    children: List.generate(
+                      3,
+                      (i) => Expanded(
+                        child: Container(
+                          height: 150,
+                          margin: const EdgeInsets.only(right: 8),
+                          color: AppColors.skeletonDark,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

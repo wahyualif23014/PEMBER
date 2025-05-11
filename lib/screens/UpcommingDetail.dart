@@ -1,7 +1,8 @@
+import 'package:absolute_cinema/models/movie_model.dart';
 import 'package:flutter/material.dart';
 
 class UpcomingDetailScreen extends StatelessWidget {
-  final Map movie;
+  final Movie movie;
 
   const UpcomingDetailScreen({super.key, required this.movie});
 
@@ -26,7 +27,7 @@ class UpcomingDetailScreen extends StatelessWidget {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(12),
                   child: Image.network(
-                    'https://image.tmdb.org/t/p/w500${movie['poster_path']}',
+                    'https://image.tmdb.org/t/p/w500${movie.posterPath}',
                     height: 310,
                   ),
                 ),
@@ -34,9 +35,9 @@ class UpcomingDetailScreen extends StatelessWidget {
                 Expanded(
                   child: Column(
                     children: [
-                      InfoTile("Genre", movie['genre'] ?? 'Drama, Action'),
-                      InfoTile("Duration", "${movie['duration'] ?? 130} Min"),
-                      InfoTile("Rating", "${movie['rating'] ?? '9'}/10"),
+                      InfoTile("Genre", 'Drama, Action'),
+                      InfoTile("Duration", "130 Min"),
+                      InfoTile("Rating","${movie.rating.toStringAsFixed(1)}/10"),
                     ],
                   ),
                 ),
@@ -44,7 +45,7 @@ class UpcomingDetailScreen extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             Text(
-              movie['title'] ?? '',
+              movie.title,
               style: const TextStyle(
                 fontSize: 22,
                 color: Colors.white,
@@ -53,10 +54,10 @@ class UpcomingDetailScreen extends StatelessWidget {
             ),
             const Divider(color: Colors.yellow),
             const SizedBox(height: 10),
-            _buildText("Director", movie['director']),
-            _buildText("Writer", movie['writer']),
-            _buildText("Actors", movie['actors']),
-            _buildText("Synopsis", movie['synopsis']),
+           _buildText("Director", null),
+            _buildText("Writer", null),
+            _buildText("Actors", null),
+            _buildText("Synopsis", null),
             const Spacer(),
             // ElevatedButton(
             //   style: ElevatedButton.styleFrom(

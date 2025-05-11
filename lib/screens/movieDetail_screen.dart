@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:absolute_cinema/models/movie_model.dart'; 
 
 class MovieDetailScreen extends StatelessWidget {
-  final Map movie;
+  final Movie movie;
 
   const MovieDetailScreen({super.key, required this.movie});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
       backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.black,
@@ -26,7 +26,7 @@ class MovieDetailScreen extends StatelessWidget {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(12),
                   child: Image.network(
-                    'https://image.tmdb.org/t/p/w500${movie['poster_path']}',
+                    'https://image.tmdb.org/t/p/w500${movie.posterPath}',
                     height: 310,
                   ),
                 ),
@@ -34,9 +34,9 @@ class MovieDetailScreen extends StatelessWidget {
                 Expanded(
                   child: Column(
                     children: [
-                      InfoTile("Genre", movie['genre'] ?? 'Drama, Action'),
-                      InfoTile("Duration", "${movie['duration'] ?? 130} Min"),
-                      InfoTile("Rating", "${movie['rating'] ?? '9'}/10"),
+                      InfoTile("Genre", 'Drama, Action'), 
+                      InfoTile("Duration", "130 Min"), 
+                      InfoTile("Rating", "${movie.rating.toStringAsFixed(1)}/10"),
                     ],
                   ),
                 ),
@@ -44,7 +44,7 @@ class MovieDetailScreen extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             Text(
-              movie['title'] ?? '',
+              movie.title,
               style: const TextStyle(
                 fontSize: 22,
                 color: Colors.white,
@@ -53,10 +53,10 @@ class MovieDetailScreen extends StatelessWidget {
             ),
             const Divider(color: Colors.yellow),
             const SizedBox(height: 10),
-            _buildText("Director", movie['director']),
-            _buildText("Writer", movie['writer']),
-            _buildText("Actors", movie['actors']),
-            _buildText("Synopsis", movie['synopsis']),
+            _buildText("Director", null),
+            _buildText("Writer", null),
+            _buildText("Actors", null),
+            _buildText("Synopsis", null),
             const Spacer(),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
@@ -76,72 +76,71 @@ class MovieDetailScreen extends StatelessWidget {
   }
 
   Widget InfoTile(String title, String value) {
-  IconData iconData;
+    IconData iconData;
 
-  switch (title.toLowerCase()) {
-    case 'genre':
-      iconData = Icons.movie;
-      break;
-    case 'duration':
-      iconData = Icons.schedule;
-      break;
-    case 'rating':
-      iconData = Icons.star;
-      break;
-    default:
-      iconData = Icons.info;
+    switch (title.toLowerCase()) {
+      case 'genre':
+        iconData = Icons.movie;
+        break;
+      case 'duration':
+        iconData = Icons.schedule;
+        break;
+      case 'rating':
+        iconData = Icons.star;
+        break;
+      default:
+        iconData = Icons.info;
+    }
+
+    return Container(
+      width: 100,
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 6),
+      decoration: BoxDecoration(
+        color: const Color(0xFF1C1C1E),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.yellow.shade700, width: 1),
+        boxShadow: const [
+          BoxShadow(
+            color: Colors.black54,
+            blurRadius: 10,
+            offset: Offset(0, 6),
+          ),
+        ],
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Colors.yellow.shade700,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(iconData, color: Colors.black, size: 20),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            title,
+            style: const TextStyle(
+              color: Colors.white70,
+              fontSize: 12,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 4),
+          Text(
+            value,
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 13,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
   }
-
-  return Container(
-    width: 100,
-    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 6),
-    decoration: BoxDecoration(
-      color: const Color(0xFF1C1C1E),
-      borderRadius: BorderRadius.circular(16),
-      border: Border.all(color: Colors.yellow.shade700, width: 1),
-      boxShadow: const [
-        BoxShadow(
-          color: Colors.black54,
-          blurRadius: 10,
-          offset: Offset(0, 6),
-        ),
-      ],
-    ),
-    child: Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: Colors.yellow.shade700,
-            shape: BoxShape.circle,
-          ),
-          child: Icon(iconData, color: Colors.black, size: 20),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          title,
-          style: const TextStyle(
-            color: Colors.white70,
-            fontSize: 12,
-          ),
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: 4),
-        Text(
-          value,
-          style: const TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            fontSize: 13,
-          ),
-          textAlign: TextAlign.center,
-        ),
-      ],
-    ),
-  );
-}
-
 
   Widget _buildText(String label, dynamic content) {
     return Align(

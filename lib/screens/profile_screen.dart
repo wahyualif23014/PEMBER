@@ -40,18 +40,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
       final userDoc =
           await FirebaseFirestore.instance.collection('users').doc(uid).get();
 
+      if (mounted) {  //pengechek an 
       setState(() {
         username = userDoc.data()?['username'] ?? "Unknown User";
         email = user.email ?? "No Email";
         isLoading = false;
       });
-    } catch (e) {
-      print("Error loading profile: $e");
+    }
+  } catch (e) {
+    print("Error loading profile: $e");
+    if (mounted) {  
       setState(() {
         isLoading = false;
       });
     }
   }
+}
 
   void _navigateToEditProfile() {
     Navigator.push(

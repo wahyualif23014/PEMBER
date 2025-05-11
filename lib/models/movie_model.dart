@@ -3,7 +3,7 @@ class Movie {
   final String title;
   final String posterPath;
   final double rating;
-  final String status; // Tambahan: "now" atau "upcoming"
+  final String status; 
 
   Movie({
     required this.id,

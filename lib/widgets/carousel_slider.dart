@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:absolute_cinema/screens/movieDetail_screen.dart';
+import 'package:absolute_cinema/models/movie_model.dart'; 
 
 class CarouselSliderWidget extends StatefulWidget {
   final List movies;
@@ -34,17 +35,19 @@ class _CarouselSliderWidgetState extends State<CarouselSliderWidget> {
         physics: const BouncingScrollPhysics(),
         itemBuilder: (context, index) {
           final movie = widget.movies[index];
-          final scale = (index - _currentPage).abs() < 1
-              ? 1 - (index - _currentPage).abs() * 0.2
-              : 0.8;
+          final scale =
+              (index - _currentPage).abs() < 1
+                  ? 1 - (index - _currentPage).abs() * 0.2
+                  : 0.8;
           final translateY = (1 - scale) * 50;
 
           return GestureDetector(
             onTap: () {
+              final parsedMovie = Movie.fromJson(movie, movie['id'].toString());
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (_) => MovieDetailScreen(movie: movie),
+                  builder: (_) => MovieDetailScreen(movie: parsedMovie),
                 ),
               );
             },
@@ -72,10 +75,10 @@ class _CarouselSliderWidgetState extends State<CarouselSliderWidget> {
                         Image.network(
                           'https://image.tmdb.org/t/p/w500${movie['poster_path']}',
                           fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) =>
-                              const Center(
-                            child: Icon(Icons.error, color: Colors.red),
-                          ),
+                          errorBuilder:
+                              (context, error, stackTrace) => const Center(
+                                child: Icon(Icons.error, color: Colors.red),
+                              ),
                           loadingBuilder: (context, child, progress) {
                             if (progress == null) return child;
                             return const Center(
