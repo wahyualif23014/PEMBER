@@ -1,3 +1,4 @@
+import 'package:absolute_cinema/screens/home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -54,7 +55,11 @@ class _LoginScreenState extends State<LoginScreen> {
           password: _passwordController.text.trim(),
         );
 
-        Get.offAllNamed('/home');
+        await FirebaseAuth.instance.authStateChanges().firstWhere(
+          (user) => user != null,
+        );
+
+        Get.offAll(() => HomeScreen());
       } on FirebaseAuthException catch (e) {
         setState(() {
           if (e.code == 'user-not-found') {

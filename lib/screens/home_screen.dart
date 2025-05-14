@@ -1,5 +1,6 @@
 import 'package:absolute_cinema/api_links/all_api.dart';
 import 'package:absolute_cinema/widgets/section_header.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -26,15 +27,22 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> fetchMovies() async {
-    final response = await http.get(Uri.parse(nowplayingmoviesurl));
+    try {
+      final response = await http.get(Uri.parse(nowplayingmoviesurl));
 
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      setState(() {
-        movies = data['results'];
-      });
-    } else {
-      throw Exception('Failed to load movies');
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+
+        if (data['results'] != null) {
+          setState(() {
+            movies = data['results'];
+          });
+        }
+      } else {
+        print("Failed to fetch: ${response.statusCode}");
+      }
+    } catch (e) {
+      print("Error fetching movies: $e");
     }
   }
 
@@ -43,15 +51,16 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
-        child: movies.isEmpty
-            ? SkeletonHomeLoader()
-            : CustomScrollView(
-                physics: const BouncingScrollPhysics(),
-                slivers: [
-                  const SliverToBoxAdapter(child: SearchBarApp()),
-                  const SliverToBoxAdapter(child: SizedBox(height: 20)),
-                  const SliverToBoxAdapter(child: SearchLocationBar()),
-                  const SliverToBoxAdapter(child: SizedBox(height: 20)),
+        child:
+            movies.isEmpty
+                ? SkeletonHomeLoader()
+                : CustomScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  slivers: [
+                    const SliverToBoxAdapter(child: SearchBarApp()),
+                    const SliverToBoxAdapter(child: SizedBox(height: 20)),
+                    const SliverToBoxAdapter(child: SearchLocationBar()),
+                    const SliverToBoxAdapter(child: SizedBox(height: 20)),
 
                     SliverToBoxAdapter(
                       child: CarouselSliderWidget(
