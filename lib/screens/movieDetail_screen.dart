@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:absolute_cinema/models/movie_model.dart'; 
+import 'package:absolute_cinema/models/movie_model.dart';
+import 'package:absolute_cinema/screens/booking_screen.dart';
+
 
 class MovieDetailScreen extends StatelessWidget {
   final Movie movie;
@@ -34,9 +36,12 @@ class MovieDetailScreen extends StatelessWidget {
                 Expanded(
                   child: Column(
                     children: [
-                      InfoTile("Genre", 'Drama, Action'), 
-                      InfoTile("Duration", "130 Min"), 
-                      InfoTile("Rating", "${movie.rating.toStringAsFixed(1)}/10"),
+                      InfoTile("Genre", 'Drama, Action'),
+                      InfoTile("Duration", "130 Min"),
+                      InfoTile(
+                        "Rating",
+                        "${movie.rating.toStringAsFixed(1)}/10",
+                      ),
                     ],
                   ),
                 ),
@@ -66,9 +71,23 @@ class MovieDetailScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(25),
                 ),
               ),
-              onPressed: () {},
-              child: const Text("Book Now", style: TextStyle(color: Colors.black)),
-            )
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => BookingScreen(movie: movie),
+                  ),
+                );
+              },
+              child: const Text(
+                "Book Now",
+                style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
+              ),
+            ),
           ],
         ),
       ),
@@ -121,10 +140,7 @@ class MovieDetailScreen extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             title,
-            style: const TextStyle(
-              color: Colors.white70,
-              fontSize: 12,
-            ),
+            style: const TextStyle(color: Colors.white70, fontSize: 12),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 4),
