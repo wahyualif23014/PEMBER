@@ -1,7 +1,6 @@
 import 'package:absolute_cinema/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:absolute_cinema/themes/colors.dart';
-import 'package:absolute_cinema/screens/upcomming_screen.dart';
 import 'package:absolute_cinema/screens/tiket_screen.dart';
 import 'package:absolute_cinema/screens/profile_screen.dart';
 import '../widgets/custom_navbar.dart';
@@ -20,7 +19,6 @@ class _TabNavigationScreenState extends State<TabNavigationScreen> {
 
   final List<Widget> _pages = const [
     HomeScreen(),
-    UpcomingTabbarContent(),
     TicketScreen(),
     ProfileScreen(),
   ];

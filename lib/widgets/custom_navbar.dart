@@ -48,14 +48,6 @@ class CustomNavBar extends StatelessWidget {
           ),
           BottomNavigationBarItem(
             icon: Icon(
-              Icons.movie_creation_outlined,
-              color: Colors.amber,
-              size: 30,
-            ),
-            label: "Movies",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
               Icons.confirmation_num_outlined,
               color: Colors.amber,
               size: 30,
