@@ -115,14 +115,13 @@ class MovieGrid extends StatelessWidget {
                   height: 20,
                   child: Text(
                     movie['title'] ?? 'Untitled',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
-                      height: 1.2,
                     ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
                 Row(
