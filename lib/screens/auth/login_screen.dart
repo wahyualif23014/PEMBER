@@ -1,4 +1,3 @@
-import 'package:absolute_cinema/screens/tab_navigation_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -50,19 +49,16 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (_emailError == null && _passwordError == null) {
       try {
+        print("📤 Logging in...");
         await authService.value.signIn(
           email: _emailController.text.trim(),
           password: _passwordController.text.trim(),
         );
+        print("✅ Login success");
 
-        await FirebaseAuth.instance.authStateChanges().firstWhere(
-          (user) => user != null,
-        );
-
-        await Future.delayed(const Duration(seconds: 1));
-
-        Get.offAll(() => const TabNavigationScreen());
+        Get.offAllNamed('/home');
       } on FirebaseAuthException catch (e) {
+        print("❌ Firebase error: ${e.code}");
         setState(() {
           if (e.code == 'user-not-found') {
             _loginError = 'No user found for that email.';
@@ -79,6 +75,7 @@ class _LoginScreenState extends State<LoginScreen> {
           }
         });
       } catch (e) {
+        print("❌ Unknown error: $e");
         setState(() {
           _loginError = 'An unexpected error occurred.';
         });

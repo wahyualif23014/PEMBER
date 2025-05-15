@@ -29,10 +29,12 @@ class _HomeScreenState extends State<HomeScreen> {
     final nowPlaying = await movieService.fetchNowPlayingMovies();
     final upcoming = await movieService.fetchUpcomingMovies();
 
-    setState(() {
-      nowPlayingMovies = nowPlaying;
-      upcomingMovies = upcoming;
-    });
+    if (nowPlaying.isNotEmpty && upcoming.isNotEmpty) {
+      setState(() {
+        nowPlayingMovies = nowPlaying;
+        upcomingMovies = upcoming;
+      });
+    }
   }
 
   @override
