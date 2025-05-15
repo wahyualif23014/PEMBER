@@ -1,4 +1,4 @@
-import 'package:absolute_cinema/screens/home_screen.dart';
+import 'package:absolute_cinema/screens/tab_navigation_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -59,7 +59,9 @@ class _LoginScreenState extends State<LoginScreen> {
           (user) => user != null,
         );
 
-        Get.offAll(() => HomeScreen());
+        await Future.delayed(const Duration(seconds: 1));
+
+        Get.offAll(() => const TabNavigationScreen());
       } on FirebaseAuthException catch (e) {
         setState(() {
           if (e.code == 'user-not-found') {

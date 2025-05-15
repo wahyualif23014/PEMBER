@@ -1,7 +1,9 @@
+import 'package:absolute_cinema/screens/tab_navigation_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:absolute_cinema/models/user_model.dart';
 import 'package:absolute_cinema/services/auth_service.dart';
+import 'package:get/get.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -84,7 +86,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         await authService.value.signUpWithModel(userModel);
 
         if (!mounted) return;
-        Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+        Get.offAll(() => const TabNavigationScreen());
       } on FirebaseAuthException catch (e) {
         setState(() {
           if (e.code == 'email-already-in-use') {
