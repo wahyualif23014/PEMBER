@@ -49,6 +49,10 @@ class Movie {
     );
   }
 
+  factory Movie.basic(String title) {
+    return Movie(id: '', title: title, posterPath: '', rating: 0.0);
+  }
+
   Map<String, dynamic> toJson() {
     return {
       'title': title,
