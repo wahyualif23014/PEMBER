@@ -3,11 +3,18 @@ import 'package:absolute_cinema/models/movie_model.dart';
 import 'package:absolute_cinema/widgets/seat_selection_widget.dart';
 import 'package:absolute_cinema/widgets/time_selector_widget.dart';
 import 'package:lottie/lottie.dart';
+import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
+
+import 'package:absolute_cinema/models/ticket_model.dart';
+import 'package:absolute_cinema/providers/TicketProvider.dart';
 
 class BookingScreen extends StatefulWidget {
   final Movie movie;
+  final Ticket? editingTicket;
+  final dynamic existingTicket;
 
-  const BookingScreen({super.key, required this.movie});
+  const BookingScreen({super.key, required this.movie, this.editingTicket, this.existingTicket});
 
   @override
   State<BookingScreen> createState() => _BookingScreenState();
@@ -17,6 +24,15 @@ class _BookingScreenState extends State<BookingScreen> {
   List<String> selectedSeats = [];
   String? selectedShowtime;
   final int seatPrice = 50000;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.editingTicket != null) {
+      selectedSeats = List.from(widget.editingTicket!.seats);
+      selectedShowtime = widget.editingTicket!.showtime;
+    }
+  }
 
   void toggleSeat(String seat) {
     setState(() {
@@ -38,44 +54,30 @@ class _BookingScreenState extends State<BookingScreen> {
 
     final total = selectedSeats.length * seatPrice;
 
-    showDialog(
-      context: context,
-      builder:
-          (_) => AlertDialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
-            title: const Text("Confirm Booking"),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text("🎬 Movie: ${widget.movie.title}"),
-                Text("🕒 Showtime: $selectedShowtime"),
-                Text("💺 Seats: ${selectedSeats.join(', ')}"),
-                Text("💳 Total: Rp$total"),
-              ],
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text("Cancel"),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("Booking Confirmed!")),
-                  );
-                },
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.yellow),
-                child: const Text(
-                  "Confirm",
-                  style: TextStyle(color: Colors.black),
-                ),
-              ),
-            ],
-          ),
+    final ticket = Ticket(
+      id: widget.editingTicket?.id ?? const Uuid().v4(),
+      movie: widget.movie,
+      seats: selectedSeats,
+      showtime: selectedShowtime!,
+      totalPrice: total,
+    );
+
+    if (widget.editingTicket != null) {
+      Provider.of<TicketProvider>(context, listen: false).updateTicket(
+        ticket,
+      );
+    } else {
+      Provider.of<TicketProvider>(context, listen: false).addTicket(ticket);
+    }
+
+    Navigator.pop(context); 
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(widget.editingTicket != null
+            ? "Ticket updated!"
+            : "Booking confirmed!"),
+      ),
     );
   }
 
@@ -90,9 +92,9 @@ class _BookingScreenState extends State<BookingScreen> {
         elevation: 0,
         foregroundColor: Colors.white,
         centerTitle: true,
-        title: const Text(
-          'Booking Seat',
-          style: TextStyle(fontWeight: FontWeight.w600),
+        title: Text(
+          widget.editingTicket != null ? 'Edit Ticket' : 'Booking Seat',
+          style: const TextStyle(fontWeight: FontWeight.w600),
         ),
       ),
       body: SingleChildScrollView(
@@ -128,7 +130,7 @@ class _BookingScreenState extends State<BookingScreen> {
                 child: SeatSelectionWidget(
                   selectedSeats: selectedSeats,
                   onSeatTap: toggleSeat,
-                  bookedSeats: const [],
+                  bookedSeats: const [], // optionally update if needed
                 ),
               ),
               const SizedBox(height: 20),
@@ -139,8 +141,8 @@ class _BookingScreenState extends State<BookingScreen> {
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: ShowtimeSelectorWidget(
-                  onSelected:
-                      (value) => setState(() => selectedShowtime = value),
+                  onSelected: (value) =>
+                      setState(() => selectedShowtime = value),
                   selectedTime: selectedShowtime,
                 ),
               ),
@@ -172,9 +174,11 @@ class _BookingScreenState extends State<BookingScreen> {
                   ),
                   minimumSize: const Size(double.infinity, 55),
                 ),
-                child: const Text(
-                  "Confirm Booking",
-                  style: TextStyle(
+                child: Text(
+                  widget.editingTicket != null
+                      ? "Update Ticket"
+                      : "Confirm Booking",
+                  style: const TextStyle(
                     color: Colors.black,
                     fontSize: 16,
                     fontWeight: FontWeight.bold,

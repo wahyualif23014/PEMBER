@@ -1,187 +1,163 @@
-import 'package:absolute_cinema/themes/colors.dart';
+// lib/screens/ticket_screen.dart
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:absolute_cinema/providers/TicketProvider.dart';
+import 'package:absolute_cinema/screens/booking_screen.dart';
 
 class TicketScreen extends StatelessWidget {
   const TicketScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // Data contoh untuk tiket
-    final List<Map<String, dynamic>> tickets = [
-      {
-        'movieTitle': 'Avatar 3',
-        'date': '20 Mar 2025',
-        'time': '19:30',
-        'seats': 'D4, D5',
-        'cinema': 'Cinema XXI Mall Central',
-        'ticketCode': 'TIX25032025001',
-        'image': 'assets/grand.png',
-      },
-      {
-        'movieTitle': 'Deadpool vs Wolverine',
-        'date': '25 Mar 2025',
-        'time': '20:15',
-        'seats': 'F7, F8, F9',
-        'cinema': 'CGV Cinemas Grand City',
-        'ticketCode': 'TIX25032025002',
-        'image': 'assets/grand.png',
-      },
-    ];
+    final tickets = Provider.of<TicketProvider>(context).tickets;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
-      body:
-          tickets.isEmpty
-              ? const Center(
-                child: Text(
-                  'Anda tidak memiliki tiket',
-                  style: TextStyle(color: Colors.white, fontSize: 18),
-                ),
-              )
-              : ListView.builder(
-                padding: const EdgeInsets.all(16.0),
-                itemCount: tickets.length,
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 16.0),
-                    child: Ticket(
-                      movieTitle: tickets[index]['movieTitle'],
-                      date: tickets[index]['date'],
-                      time: tickets[index]['time'],
-                      seats: tickets[index]['seats'],
-                      cinema: tickets[index]['cinema'],
-                      ticketCode: tickets[index]['ticketCode'],
-                      image: tickets[index]['image'],
-                    ),
-                  );
-                },
+      backgroundColor: Colors.black,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: const Text(
+          'My Tickets',
+          style: TextStyle(
+            color: Colors.yellow,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        centerTitle: true,
+      ),
+      body: tickets.isEmpty
+          ? const Center(
+              child: Text(
+                "No tickets booked yet.",
+                style: TextStyle(color: Colors.white70, fontSize: 18),
               ),
+            )
+          : ListView.separated(
+              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+              itemCount: tickets.length,
+              separatorBuilder: (_, __) => const SizedBox(height: 12),
+              itemBuilder: (context, index) {
+                final ticket = tickets[index];
+                return TicketCard(ticket: ticket);
+              },
+            ),
     );
   }
 }
 
-class Ticket extends StatelessWidget {
-  final String movieTitle;
-  final String date;
-  final String time;
-  final String seats;
-  final String cinema;
-  final String ticketCode;
-  final String image;
 
-  const Ticket({
-    Key? key,
-    required this.movieTitle,
-    required this.date,
-    required this.time,
-    required this.seats,
-    required this.cinema,
-    required this.ticketCode,
-    required this.image,
-  }) : super(key: key);
+class TicketCard extends StatelessWidget {
+  final ticket;
+
+  const TicketCard({super.key, required this.ticket});
 
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<TicketProvider>(context, listen: false);
+
     return Card(
-      elevation: 4.0,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
-      clipBehavior: Clip.antiAlias,
-      color: const Color(0xFF252525),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Banner film
-          Image.asset(
-            image,
-            height: 120,
-            width: double.infinity,
-            fit: BoxFit.cover,
-          ),
-
-          // Informasi tiket
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      color: Colors.grey[900],
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      elevation: 6,
+      shadowColor: Colors.yellow.withOpacity(0.5),
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              ticket.movie.title,
+              style: const TextStyle(
+                color: Colors.yellow,
+                fontWeight: FontWeight.bold,
+                fontSize: 22,
+                letterSpacing: 1.1,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Row(
               children: [
+                const Icon(Icons.access_time, color: Colors.white70, size: 20),
+                const SizedBox(width: 6),
                 Text(
-                  movieTitle,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-                const SizedBox(height: 12),
-
-                _buildInfoRow(Icons.calendar_today, 'Tanggal', date),
-                const SizedBox(height: 8),
-                _buildInfoRow(Icons.access_time, 'Jam', time),
-                const SizedBox(height: 8),
-                _buildInfoRow(Icons.event_seat, 'Kursi', seats),
-                const SizedBox(height: 8),
-                _buildInfoRow(Icons.location_on, 'Bioskop', cinema),
-
-                const Divider(color: Colors.grey, height: 24),
-
-                // QR Code placeholder dan kode tiket
-                Row(
-                  children: [
-                    Container(
-                      width: 80,
-                      height: 80,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      child: const Center(
-                        child: Text(
-                          'QR Code',
-                          style: TextStyle(color: Colors.black),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            'Kode Tiket:',
-                            style: TextStyle(color: Colors.grey),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            ticketCode,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              color: Colors.amberAccent,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+                  ticket.showtime,
+                  style: const TextStyle(color: Colors.white70, fontSize: 16),
                 ),
               ],
             ),
-          ),
-        ],
-      ),
-    );
-  }
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                const Icon(Icons.event_seat, color: Colors.white70, size: 20),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Text(
+                    ticket.seats.join(', '),
+                    style: const TextStyle(color: Colors.white70, fontSize: 16),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Divider(color: Colors.yellow.withOpacity(0.7)),
+            const SizedBox(height: 12),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  "Total Price",
+                  style: TextStyle(color: Colors.white70, fontSize: 16),
+                ),
+                Text(
+                  "Rp${ticket.totalPrice}",
+                  style: const TextStyle(
+                    color: Colors.yellow,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                TextButton(
+                  onPressed: () async {
+                    final editedTicket = await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => BookingScreen(
+                          movie: ticket.movie,
+                          existingTicket: ticket, 
+                        ),
+                      ),
+                    );
 
-  Widget _buildInfoRow(IconData icon, String label, String value) {
-    return Row(
-      children: [
-        Icon(icon, size: 16, color: Colors.grey),
-        const SizedBox(width: 8),
-        Text('$label: ', style: const TextStyle(color: Colors.grey)),
-        Expanded(
-          child: Text(value, style: const TextStyle(color: Colors.white)),
+                    if (editedTicket != null) {
+                      provider.updateTicket(editedTicket);
+                    }
+                  },
+                  child: const Text(
+                    "Edit",
+                    style: TextStyle(color: Colors.yellow),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    provider.deleteTicket(ticket.id);
+                  },
+                  child: const Text(
+                    "Delete",
+                    style: TextStyle(color: Colors.redAccent),
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }
