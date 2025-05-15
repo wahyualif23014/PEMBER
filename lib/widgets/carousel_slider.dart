@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:absolute_cinema/screens/movie_detail_screen.dart';
-import 'package:absolute_cinema/models/movie_model.dart'; 
+import 'package:absolute_cinema/models/movie_model.dart';
 
 class CarouselSliderWidget extends StatefulWidget {
   final List movies;
@@ -47,7 +47,7 @@ class _CarouselSliderWidgetState extends State<CarouselSliderWidget> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (_) => MovieDetailScreen(movie: parsedMovie),
+                  builder: (_) => MovieDetailScreen(movieId: parsedMovie.id),
                 ),
               );
             },

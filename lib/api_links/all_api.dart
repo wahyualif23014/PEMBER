@@ -17,4 +17,8 @@ String nowplayingmoviesurl =
 String topratedmoviesurl =
     'https://api.themoviedb.org/3/movie/top_rated?api_key=$apikey';
 String upcomingmoviesurl =
-    'https://api.themoviedb.org/3/movie/latest?api_key=$apikey';
+    'https://api.themoviedb.org/3/movie/upcoming?api_key=$apikey';
+
+String detailMovieUrl(String movieId) {
+  return 'https://api.themoviedb.org/3/movie/$movieId?api_key=$apikey&language=en-US';
+}

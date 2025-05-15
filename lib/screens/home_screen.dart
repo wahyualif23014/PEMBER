@@ -15,7 +15,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  List movies = [];
+  List nowPlayingMovies = [];
+  List upcomingMovies = [];
 
   @override
   void initState() {
@@ -25,10 +26,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> loadMovies() async {
     final movieService = TheMovieDB();
-    final fetchedMovies = await movieService.fetchMovies();
+    final nowPlaying = await movieService.fetchNowPlayingMovies();
+    final upcoming = await movieService.fetchUpcomingMovies();
 
     setState(() {
-      movies = fetchedMovies;
+      nowPlayingMovies = nowPlaying;
+      upcomingMovies = upcoming;
     });
   }
 
@@ -36,37 +39,28 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child:
-          movies.isEmpty
+          nowPlayingMovies.isEmpty && upcomingMovies.isEmpty
               ? const SkeletonHomeLoader()
               : CustomScrollView(
                 physics: const BouncingScrollPhysics(),
                 slivers: [
-                  // Padding atas
                   const SliverToBoxAdapter(child: SizedBox(height: 16)),
-
-                  // Search Bar
                   const SliverPadding(
                     padding: EdgeInsets.symmetric(horizontal: 16),
                     sliver: SliverToBoxAdapter(child: SearchBarApp()),
                   ),
                   const SliverToBoxAdapter(child: SizedBox(height: 20)),
-
-                  // Location Bar
                   const SliverPadding(
                     padding: EdgeInsets.symmetric(horizontal: 16),
                     sliver: SliverToBoxAdapter(child: SearchLocationBar()),
                   ),
                   const SliverToBoxAdapter(child: SizedBox(height: 20)),
-
-                  // Carousel Slider (no padding)
                   SliverToBoxAdapter(
                     child: CarouselSliderWidget(
-                      movies: movies.take(6).toList(),
+                      movies: nowPlayingMovies.take(6).toList(),
                     ),
                   ),
                   const SliverToBoxAdapter(child: SizedBox(height: 30)),
-
-                  // Now Showing Header
                   SliverPadding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     sliver: SliverToBoxAdapter(
@@ -82,9 +76,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                     appBar: AppBar(
                                       title: const Text("Now Showing"),
                                     ),
-                                    body: MovieGrid(
-                                      movies: movies,
-                                      source: "now_showing",
+                                    body: Padding(
+                                      padding: const EdgeInsets.all(16.0),
+                                      child: MovieGrid(
+                                        movies: nowPlayingMovies,
+                                        source: "now_showing",
+                                      ),
                                     ),
                                   ),
                             ),
@@ -94,20 +91,16 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   const SliverToBoxAdapter(child: SizedBox(height: 20)),
-
-                  // Now Showing Grid
                   SliverPadding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     sliver: SliverToBoxAdapter(
                       child: MovieGrid(
-                        movies: movies.take(6).toList(),
+                        movies: nowPlayingMovies.take(6).toList(),
                         source: "now_showing",
                       ),
                     ),
                   ),
                   const SliverToBoxAdapter(child: SizedBox(height: 20)),
-
-                  // Upcoming Header
                   SliverPadding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     sliver: SliverToBoxAdapter(
@@ -123,9 +116,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                     appBar: AppBar(
                                       title: const Text("Upcoming"),
                                     ),
-                                    body: MovieGrid(
-                                      movies: movies,
-                                      source: "upcoming",
+                                    body: Padding(
+                                      padding: const EdgeInsets.all(16.0),
+                                      child: MovieGrid(
+                                        movies: upcomingMovies,
+                                        source: "upcoming",
+                                      ),
                                     ),
                                   ),
                             ),
@@ -135,19 +131,15 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   const SliverToBoxAdapter(child: SizedBox(height: 20)),
-
-                  // Upcoming Grid
                   SliverPadding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     sliver: SliverToBoxAdapter(
                       child: MovieGrid(
-                        movies: movies.take(6).toList(),
+                        movies: upcomingMovies.take(6).toList(),
                         source: "upcoming",
                       ),
                     ),
                   ),
-
-                  // Padding bawah
                   const SliverToBoxAdapter(child: SizedBox(height: 16)),
                 ],
               ),
