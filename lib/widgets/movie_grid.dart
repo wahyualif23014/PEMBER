@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:absolute_cinema/screens/movieDetail_screen.dart';
-import 'package:absolute_cinema/screens/UpcommingDetail.dart';
+import 'package:absolute_cinema/screens/movie_detail_screen.dart';
+import 'package:absolute_cinema/screens/upcomming_detail_screen.dart';
 import 'package:absolute_cinema/models/movie_model.dart';
 import 'package:absolute_cinema/themes/colors.dart';
 

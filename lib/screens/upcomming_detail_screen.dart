@@ -9,7 +9,6 @@ class UpcomingDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
       backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.black,
@@ -37,7 +36,10 @@ class UpcomingDetailScreen extends StatelessWidget {
                     children: [
                       InfoTile("Genre", 'Drama, Action'),
                       InfoTile("Duration", "130 Min"),
-                      InfoTile("Rating","${movie.rating.toStringAsFixed(1)}/10"),
+                      InfoTile(
+                        "Rating",
+                        "${movie.rating.toStringAsFixed(1)}/10",
+                      ),
                     ],
                   ),
                 ),
@@ -54,7 +56,7 @@ class UpcomingDetailScreen extends StatelessWidget {
             ),
             const Divider(color: Colors.yellow),
             const SizedBox(height: 10),
-           _buildText("Director", null),
+            _buildText("Director", null),
             _buildText("Writer", null),
             _buildText("Actors", null),
             _buildText("Synopsis", null),
@@ -77,72 +79,68 @@ class UpcomingDetailScreen extends StatelessWidget {
   }
 
   Widget InfoTile(String title, String value) {
-  IconData iconData;
+    IconData iconData;
 
-  switch (title.toLowerCase()) {
-    case 'genre':
-      iconData = Icons.movie;
-      break;
-    case 'duration':
-      iconData = Icons.schedule;
-      break;
-    case 'rating':
-      iconData = Icons.star;
-      break;
-    default:
-      iconData = Icons.info;
+    switch (title.toLowerCase()) {
+      case 'genre':
+        iconData = Icons.movie;
+        break;
+      case 'duration':
+        iconData = Icons.schedule;
+        break;
+      case 'rating':
+        iconData = Icons.star;
+        break;
+      default:
+        iconData = Icons.info;
+    }
+
+    return Container(
+      width: 100,
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 6),
+      decoration: BoxDecoration(
+        color: const Color(0xFF1C1C1E),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.yellow.shade700, width: 1),
+        boxShadow: const [
+          BoxShadow(
+            color: Colors.black54,
+            blurRadius: 10,
+            offset: Offset(0, 6),
+          ),
+        ],
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Colors.yellow.shade700,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(iconData, color: Colors.black, size: 20),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            title,
+            style: const TextStyle(color: Colors.white70, fontSize: 12),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 4),
+          Text(
+            value,
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 13,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
   }
-
-  return Container(
-    width: 100,
-    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 6),
-    decoration: BoxDecoration(
-      color: const Color(0xFF1C1C1E),
-      borderRadius: BorderRadius.circular(16),
-      border: Border.all(color: Colors.yellow.shade700, width: 1),
-      boxShadow: const [
-        BoxShadow(
-          color: Colors.black54,
-          blurRadius: 10,
-          offset: Offset(0, 6),
-        ),
-      ],
-    ),
-    child: Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: Colors.yellow.shade700,
-            shape: BoxShape.circle,
-          ),
-          child: Icon(iconData, color: Colors.black, size: 20),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          title,
-          style: const TextStyle(
-            color: Colors.white70,
-            fontSize: 12,
-          ),
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: 4),
-        Text(
-          value,
-          style: const TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            fontSize: 13,
-          ),
-          textAlign: TextAlign.center,
-        ),
-      ],
-    ),
-  );
-}
-
 
   Widget _buildText(String label, dynamic content) {
     return Align(

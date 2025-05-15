@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:absolute_cinema/screens/movieDetail_screen.dart';
+import 'package:absolute_cinema/screens/movie_detail_screen.dart';
 import 'package:absolute_cinema/models/movie_model.dart'; 
 
 class CarouselSliderWidget extends StatefulWidget {
