@@ -9,6 +9,7 @@ class TicketService {
   final String baseUrl = 'http://localhost:3000';
 
   Future<void> fetchTickets() async {
+
     try {
       final res = await http.get(Uri.parse('$baseUrl/tickets'));
 
@@ -22,15 +23,20 @@ class TicketService {
   }
 
   Future<void> fetchTicketsByUserId(String userId) async {
+    print("enter this function");
     try {
       final res = await http.get(Uri.parse('$baseUrl/users/$userId/tickets'));
 
       if (res.statusCode == 200) {
         final data = jsonDecode(res.body)['data'];
+
+        print(data);
         tickets = (data as List).map((e) => Ticket.fromJson(e)).toList();
+      } else {
+        print("❌ Failed to fetch tickets for user $userId: ${res.statusCode}");
       }
     } catch (e) {
-      debugPrint("❌ Failed to fetch tickets for user $userId: $e");
+      print("❌ Failed to fetch tickets for user $userId: $e");
     }
   }
 

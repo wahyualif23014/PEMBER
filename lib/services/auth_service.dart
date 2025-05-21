@@ -12,7 +12,6 @@ class AuthService {
 
   Stream<User?> get authStateChanges => firebaseAuth.authStateChanges();
 
-  // ✅ SIGN UP - now using UserModel
   Future<UserCredential> signUpWithModel(UserModel userModel) async {
     final userCredential = await firebaseAuth.createUserWithEmailAndPassword(
       email: userModel.email,

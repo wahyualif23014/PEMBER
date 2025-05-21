@@ -15,7 +15,7 @@ class TabNavigationScreen extends StatefulWidget {
 class _TabNavigationScreenState extends State<TabNavigationScreen> {
   int _selectedIndex = 0;
 
-  final List<String> _titles = ['', 'Coming Soon', 'My Tickets', 'Profile'];
+  final List<String> _titles = ['', 'My Tickets', 'Profile'];
 
   final List<Widget> _pages = const [
     HomeScreen(),
