@@ -109,7 +109,7 @@ class _TicketScreenState extends State<TicketScreen> {
                                 editingTicket: ticket,
                               ),
                         ),
-                      ).then((_) => _loadUserTickets()); // reload after edit
+                      ).then((_) => _loadUserTickets()); 
                     },
                   );
                 },

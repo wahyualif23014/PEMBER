@@ -12,7 +12,6 @@ class AuthService {
 
   Stream<User?> get authStateChanges => firebaseAuth.authStateChanges();
 
-  // ✅ SIGN UP - now using UserModel
   Future<UserCredential> signUpWithModel(UserModel userModel) async {
     final userCredential = await firebaseAuth.createUserWithEmailAndPassword(
       email: userModel.email,
@@ -21,13 +20,11 @@ class AuthService {
 
     final uid = userCredential.user!.uid;
 
-    // Simpan ke Firestore
     await FirebaseFirestore.instance.collection("users").doc(uid).set({
       ...userModel.toJson(),
       "id": uid,
     });
 
-    // Set displayName di Firebase Auth
     await userCredential.user!.updateDisplayName(userModel.username);
 
     return userCredential;

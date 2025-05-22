@@ -1,6 +1,7 @@
 {
-    "flutterTools.displayGetxContextMenu": true,
-    "flutterTools.displayMobxContextMenu": false,
-    "flutterTools.displayRiverpodContextMenu": false,
-    "flutterTools.displayModularContextMenu": false
+  "flutterTools.displayGetxContextMenu": true,
+  "flutterTools.displayMobxContextMenu": false,
+  "flutterTools.displayRiverpodContextMenu": false,
+  "flutterTools.displayModularContextMenu": false,
+  "cmake.sourceDirectory": "C:/Users/User/Documents/PEMROGRAMAN/OnGoing/Movie Flutter/PEMBER/linux"
 }
