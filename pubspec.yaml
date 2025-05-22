@@ -30,6 +30,7 @@ dependencies:
   awesome_notifications_core: any
   awesome_notifications_fcm: ^0.10.1
   awesome_notifications: ^0.10.1
+  internet_connection_checker_plus: ^2.7.2
 
 
 dev_dependencies:

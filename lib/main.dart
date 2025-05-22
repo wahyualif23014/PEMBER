@@ -10,6 +10,8 @@ import 'package:absolute_cinema/screens/auth/welcome_screen.dart';
 import 'firebase_options.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'services/notification_controller.dart';
+import 'package:absolute_cinema/widgets/connection_status_widget.dart';
+import 'package:absolute_cinema/services/ConnectionService.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -37,9 +39,12 @@ void main() async {
 
   //  listener event notifikasi
   AwesomeNotifications().setListeners(
-    onNotificationCreatedMethod: NotificationController.onNotificationCreatedMethod,
-    onNotificationDisplayedMethod: NotificationController.onNotificationDisplayedMethod,
-    onDismissActionReceivedMethod: NotificationController.onDismissActionReceivedMethod,
+    onNotificationCreatedMethod:
+        NotificationController.onNotificationCreatedMethod,
+    onNotificationDisplayedMethod:
+        NotificationController.onNotificationDisplayedMethod,
+    onDismissActionReceivedMethod:
+        NotificationController.onDismissActionReceivedMethod,
     onActionReceivedMethod: NotificationController.onActionReceivedMethod,
   );
 
@@ -53,7 +58,6 @@ void main() async {
 
   runApp(const MyApp());
 }
-
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -71,28 +75,48 @@ class MyApp extends StatelessWidget {
         GetPage(name: '/register', page: () => const RegisterScreen()),
         GetPage(name: '/home', page: () => const TabNavigationScreen()),
       ],
-      home: StreamBuilder<User?>(
-        stream: authService.value.authStateChanges,
+      home: FutureBuilder<bool>(
+        future: ConnectionService.checkConnection(),
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
+          if (!snapshot.hasData) {
             return const Scaffold(
               body: Center(
-                child: CircularProgressIndicator(color: Colors.amberAccent),
+                child: CircularProgressIndicator(color: Colors.amber),
               ),
             );
           }
 
-          if (snapshot.hasData) {
-            Future.microtask(() {
-              if (Get.currentRoute != '/home') {
-                Get.offAllNamed('/home');
-              }
-            });
-            return const SizedBox();
-          } else {
-            print("👋 Not authenticated");
-            return const WelcomeScreen();
+          if (!snapshot.data!) {
+            return ConnectionStatusWidget(
+              onConnected:
+                  () =>
+                      Get.forceAppUpdate(), // refresh app saat koneksi kembali
+            );
           }
+
+          return StreamBuilder<User?>(
+            stream: authService.value.authStateChanges,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Scaffold(
+                  body: Center(
+                    child: CircularProgressIndicator(color: Colors.amberAccent),
+                  ),
+                );
+              }
+
+              if (snapshot.hasData) {
+                Future.microtask(() {
+                  if (Get.currentRoute != '/home') {
+                    Get.offAllNamed('/home');
+                  }
+                });
+                return const SizedBox();
+              } else {
+                return const WelcomeScreen();
+              }
+            },
+          );
         },
       ),
     );
