@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:absolute_cinema/screens/edit_profile_screen.dart';
 import 'package:absolute_cinema/themes/colors.dart';
 import 'package:absolute_cinema/widgets/profile_menu_item.dart';
+import 'package:http/http.dart';
+import 'package:absolute_cinema/screens/feedback_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -40,22 +42,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
       final userDoc =
           await FirebaseFirestore.instance.collection('users').doc(uid).get();
 
-      if (mounted) {  //pengechek an 
-      setState(() {
-        username = userDoc.data()?['username'] ?? "Unknown User";
-        email = user.email ?? "No Email";
-        isLoading = false;
-      });
-    }
-  } catch (e) {
-    print("Error loading profile: $e");
-    if (mounted) {  
-      setState(() {
-        isLoading = false;
-      });
+      if (mounted) {
+        //pengechek an
+        setState(() {
+          username = userDoc.data()?['username'] ?? "Unknown User";
+          email = user.email ?? "No Email";
+          isLoading = false;
+        });
+      }
+    } catch (e) {
+      print("Error loading profile: $e");
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
     }
   }
-}
 
   void _navigateToEditProfile() {
     Navigator.push(
@@ -192,15 +195,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     ProfileMenuItem(
                       icon: Icons.help_outline,
-                      title: 'Support',
-                      onTap:
-                          () => ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Bantuan akan segera tersedia'),
-                            ),
+                      title: 'Feedback',
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const FeedbackScreen(),
                           ),
+                        );
+                      },
                     ),
-
                     const SizedBox(height: 20),
 
                     Padding(
