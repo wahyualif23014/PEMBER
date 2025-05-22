@@ -13,17 +13,24 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  image_picker: ^0.8.4+5
-  http: ^0.13.6
+  image_picker: ^1.1.2
+  http: ^1.4.0
   cupertino_icons: ^1.0.8
   get: ^4.7.2
   cloud_firestore: ^5.6.7
   firebase_core: ^3.13.0
   firebase_auth: ^5.5.3
   firebase_storage: ^12.4.5
-  lottie: ^2.0.0
+  lottie: ^3.3.1
   provider: ^6.1.5
   uuid: ^4.5.1
+  geolocator: ^14.0.0
+  geocoding: ^3.0.0
+  url_launcher: ^6.1.10
+  awesome_notifications_core: any
+  awesome_notifications_fcm: ^0.10.1
+  awesome_notifications: ^0.10.1
+
 
 dev_dependencies:
   flutter_test:

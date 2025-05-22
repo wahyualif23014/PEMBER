@@ -2,14 +2,15 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:absolute_cinema/models/ticket_model.dart';
+import 'notification_service.dart';
+
 
 class TicketService {
   List<Ticket> tickets = [];
 
-  final String baseUrl = 'http://localhost:3000';
+final String baseUrl = "http://192.168.1.54:3000";
 
   Future<void> fetchTickets() async {
-
     try {
       final res = await http.get(Uri.parse('$baseUrl/tickets'));
 
@@ -59,6 +60,12 @@ class TicketService {
 
       if (res.statusCode == 201) {
         await fetchTickets();
+
+        // notifikasi
+        await NotificationService.awesome_notifications(
+          title: 'Booking Berhasil',
+          body: 'Tiket untuk anda telah berhasil dipesan!',
+        );
       }
     } catch (e) {
       debugPrint("❌ Failed to add ticket: $e");

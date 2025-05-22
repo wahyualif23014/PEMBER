@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:uuid/uuid.dart';
 import 'package:lottie/lottie.dart';
+import 'package:absolute_cinema/services/notification_service.dart';
 
 import 'package:absolute_cinema/models/movie_model.dart';
 import 'package:absolute_cinema/models/ticket_model.dart';
 import 'package:absolute_cinema/services/ticket_service.dart';
 import 'package:absolute_cinema/widgets/seat_selection_widget.dart';
 import 'package:absolute_cinema/widgets/time_selector_widget.dart';
+
 
 class BookingScreen extends StatefulWidget {
   final Movie movie;
@@ -72,40 +74,52 @@ class _BookingScreenState extends State<BookingScreen> {
   }
 
   Future<void> confirmBooking() async {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user == null || selectedSeats.isEmpty || selectedShowtime == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please select showtime and seats.")),
-      );
-      return;
-    }
-
-    final ticket = Ticket(
-      id: widget.editingTicket?.id ?? const Uuid().v4(),
-      movie: widget.movie,
-      seats: selectedSeats,
-      showtime: selectedShowtime!,
-      totalPrice: selectedSeats.length * seatPrice,
-    );
-
-    if (widget.editingTicket != null) {
-      await ticketService.updateTicketOnServer(ticket);
-    } else {
-      await ticketService.addTicketToServer(ticket, user.uid);
-    }
-
-    if (!mounted) return;
-    Navigator.pop(context);
+  final user = FirebaseAuth.instance.currentUser;
+  if (user == null || selectedSeats.isEmpty || selectedShowtime == null) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          widget.editingTicket != null
-              ? "Ticket updated!"
-              : "Booking confirmed!",
-        ),
-      ),
+      const SnackBar(content: Text("Please select showtime and seats.")),
     );
+    return;
   }
+
+  final ticket = Ticket(
+    id: widget.editingTicket?.id ?? const Uuid().v4(),
+    movie: widget.movie,
+    seats: selectedSeats,
+    showtime: selectedShowtime!,
+    totalPrice: selectedSeats.length * seatPrice,
+  );
+
+  if (widget.editingTicket != null) {
+    await ticketService.updateTicketOnServer(ticket);
+  } else {
+    await ticketService.addTicketToServer(ticket, user.uid);
+
+    // Notifikasi berhasil
+    await NotificationService.awesome_notifications(
+      title: 'Booking Berhasil',
+      body: 'Tiket untuk "${widget.movie.title}" telah berhasil dipesan!',
+    );
+
+    await Future.delayed(const Duration(milliseconds: 300));
+  }
+
+  if (!mounted) return;
+
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text(
+        widget.editingTicket != null
+            ? "Ticket updated!"
+            : "Booking confirmed!",
+      ),
+    ),
+  );
+
+  Navigator.pop(context);
+}
+
+
 
   @override
   Widget build(BuildContext context) {
