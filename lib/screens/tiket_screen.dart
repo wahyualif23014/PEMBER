@@ -13,12 +13,14 @@ class TicketScreen extends StatefulWidget {
 
 class _TicketScreenState extends State<TicketScreen> {
   final TicketService ticketService = TicketService();
+
   List<Ticket> userTickets = [];
   bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
+    print("Loading user tickets...");
     _loadUserTickets();
   }
 
@@ -30,6 +32,8 @@ class _TicketScreenState extends State<TicketScreen> {
     }
 
     await ticketService.fetchTicketsByUserId(user.uid);
+    print("Tickets fetched: ${ticketService.tickets}");
+
     setState(() {
       userTickets = ticketService.tickets;
       isLoading = false;
