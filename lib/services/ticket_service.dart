@@ -4,11 +4,10 @@ import 'package:http/http.dart' as http;
 import 'package:absolute_cinema/models/ticket_model.dart';
 import 'notification_service.dart';
 
-
 class TicketService {
   List<Ticket> tickets = [];
 
-final String baseUrl = "http://192.168.1.54:3000";
+  final String baseUrl = "http://localhost:3000";
 
   Future<void> fetchTickets() async {
     try {
