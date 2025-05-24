@@ -16,6 +16,7 @@ class _TicketScreenState extends State<TicketScreen> {
 
   List<Ticket> userTickets = [];
   bool isLoading = true;
+  
 
   @override
   void initState() {
@@ -44,86 +45,144 @@ class _TicketScreenState extends State<TicketScreen> {
     await ticketService.deleteTicket(id);
     await _loadUserTickets();
     if (mounted) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text("Ticket deleted")));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text("Ticket deleted successfully"),
+          backgroundColor: Colors.green,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        ),
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child:
-          isLoading
-              ? const Center(
-                child: CircularProgressIndicator(color: Colors.yellow),
-              )
-              : userTickets.isEmpty
-              ? const Center(
-                child: Text(
-                  "No tickets booked yet.",
-                  style: TextStyle(color: Colors.white70, fontSize: 18),
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Colors.black87,
+              Colors.grey[900]!,
+            ],
+          ),
+        ),
+        child: isLoading
+            ? const Center(
+                child: CircularProgressIndicator(
+                  color: Colors.yellow,
+                  strokeWidth: 3,
                 ),
               )
-              : ListView.separated(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 12,
-                  horizontal: 16,
-                ),
-                itemCount: userTickets.length,
-                separatorBuilder: (_, __) => const SizedBox(height: 12),
-                itemBuilder: (context, index) {
-                  final ticket = userTickets[index];
-                  return TicketCard(
-                    ticket: ticket,
-                    onDelete: () async {
-                      final confirm = await showDialog<bool>(
-                        context: context,
-                        builder:
-                            (context) => AlertDialog(
-                              title: const Text("Delete Ticket?"),
+            : userTickets.isEmpty
+                ? Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.movie_outlined,
+                          size: 80,
+                          color: Colors.white30,
+                        ),
+                        const SizedBox(height: 16),
+                        const Text(
+                          "No tickets booked yet.",
+                          style: TextStyle(
+                            color: Colors.white70,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        const Text(
+                          "Start booking your favorite movies!",
+                          style: TextStyle(
+                            color: Colors.white54,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                : ListView.separated(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 20,
+                      horizontal: 16,
+                    ),
+                    itemCount: userTickets.length,
+                    separatorBuilder: (_, __) => const SizedBox(height: 16),
+                    itemBuilder: (context, index) {
+                      final ticket = userTickets[index];
+                      return TicketCard(
+                        ticket: ticket,
+                        onDelete: () async {
+                          final confirm = await showDialog<bool>(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              backgroundColor: Colors.grey[900],
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              title: const Text(
+                                "Delete Ticket?",
+                                style: TextStyle(color: Colors.white),
+                              ),
                               content: const Text(
-                                "Are you sure you want to delete this ticket?",
+                                "Are you sure you want to delete this ticket? This action cannot be undone.",
+                                style: TextStyle(color: Colors.white70),
                               ),
                               actions: [
                                 TextButton(
-                                  onPressed:
-                                      () => Navigator.pop(context, false),
-                                  child: const Text("Cancel"),
+                                  onPressed: () => Navigator.pop(context, false),
+                                  child: const Text(
+                                    "Cancel",
+                                    style: TextStyle(color: Colors.grey),
+                                  ),
                                 ),
-                                TextButton(
+                                ElevatedButton(
                                   onPressed: () => Navigator.pop(context, true),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.red,
+                                    foregroundColor: Colors.white,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                  ),
                                   child: const Text("Delete"),
                                 ),
                               ],
                             ),
-                      );
+                          );
 
-                      if (confirm == true) {
-                        await _deleteTicket(ticket.id);
-                      }
-                    },
-                    onEdit: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder:
-                              (_) => BookingScreen(
+                          if (confirm == true) {
+                            await _deleteTicket(ticket.id);
+                          }
+                        },
+                        onEdit: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => BookingScreen(
                                 movie: ticket.movie,
                                 editingTicket: ticket,
                               ),
-                        ),
-                      ).then((_) => _loadUserTickets()); // reload after edit
+                            ),
+                          ).then((_) => _loadUserTickets());
+                        },
+                      );
                     },
-                  );
-                },
-              ),
+                  ),
+      ),
     );
   }
 }
 
 class TicketCard extends StatelessWidget {
   final Ticket ticket;
+  
   final VoidCallback onEdit;
   final VoidCallback onDelete;
 
@@ -134,85 +193,226 @@ class TicketCard extends StatelessWidget {
     required this.onDelete,
   });
 
+
+
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: Colors.grey[900],
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      elevation: 6,
-      shadowColor: Colors.yellow.withOpacity(0.5),
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.grey[900]!,
+            Colors.grey[850]!,
+          ],
+        ),
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.yellow.withOpacity(0.15),
+            blurRadius: 15,
+            offset: const Offset(0, 5),
+          ),
+          BoxShadow(
+            color: Colors.black.withOpacity(0.3),
+            blurRadius: 10,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
       child: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Movie Poster di Tengah
+            const SizedBox(height: 20),
+
+            // Movie Title
             Text(
               ticket.movie.title,
+              textAlign: TextAlign.center,
               style: const TextStyle(
-                color: Colors.yellow,
+                color: Colors.white,
                 fontWeight: FontWeight.bold,
                 fontSize: 22,
-                letterSpacing: 1.1,
+                letterSpacing: 0.5,
+              ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+            const SizedBox(height: 16),
+
+            // Ticket Details
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.3),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: Colors.yellow.withOpacity(0.2),
+                  width: 1,
+                ),
+              ),
+              child: Column(
+                children: [
+                  // Showtime
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Colors.yellow.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: const Icon(
+                          Icons.access_time,
+                          color: Colors.yellow,
+                          size: 18,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              "Showtime",
+                              style: TextStyle(
+                                color: Colors.white54,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            Text(
+                              ticket.showtime,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+
+                  // Seats
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Colors.yellow.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: const Icon(
+                          Icons.event_seat,
+                          color: Colors.yellow,
+                          size: 18,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              "Seats",
+                              style: TextStyle(
+                                color: Colors.white54,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            Text(
+                              ticket.seats.join(', '),
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                const Icon(Icons.access_time, color: Colors.white70, size: 20),
-                const SizedBox(width: 6),
-                Text(
-                  ticket.showtime,
-                  style: const TextStyle(color: Colors.white70, fontSize: 16),
+            const SizedBox(height: 16),
+
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Colors.yellow.withOpacity(0.2),
+                    Colors.yellow.withOpacity(0.1),
+                  ],
                 ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                const Icon(Icons.event_seat, color: Colors.white70, size: 20),
-                const SizedBox(width: 6),
-                Expanded(
-                  child: Text(
-                    ticket.seats.join(', '),
-                    style: const TextStyle(color: Colors.white70, fontSize: 16),
-                    overflow: TextOverflow.ellipsis,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(
+                  color: Colors.yellow.withOpacity(0.3),
+                  width: 1,
+                ),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    "Total Price",
+                    style: TextStyle(
+                      color: Colors.white70,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            const Divider(color: Colors.yellow),
-            const SizedBox(height: 12),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  "Total Price",
-                  style: TextStyle(color: Colors.white70, fontSize: 16),
-                ),
-                Text(
-                  "Rp${ticket.totalPrice}",
-                  style: const TextStyle(
-                    color: Colors.yellow,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
+                  Text(
+                    "Rp${ticket.totalPrice}",
+                    style: const TextStyle(
+                      color: Colors.yellow,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                      letterSpacing: 0.5,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 16),
+
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                IconButton(
-                  onPressed: onEdit,
-                  icon: const Icon(Icons.edit, color: Colors.white),
-                  tooltip: "Edit Ticket",
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.blue.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: IconButton(
+                    onPressed: onEdit,
+                    icon: const Icon(Icons.edit_outlined, color: Colors.blue),
+                    tooltip: "Edit Ticket",
+                    padding: const EdgeInsets.all(12),
+                  ),
                 ),
-                IconButton(
-                  onPressed: onDelete,
-                  icon: const Icon(Icons.delete, color: Colors.redAccent),
-                  tooltip: "Delete Ticket",
+                const SizedBox(width: 8),
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.red.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: IconButton(
+                    onPressed: onDelete,
+                    icon: const Icon(Icons.delete_outline, color: Colors.red),
+                    tooltip: "Delete Ticket",
+                    padding: const EdgeInsets.all(12),
+                  ),
                 ),
               ],
             ),

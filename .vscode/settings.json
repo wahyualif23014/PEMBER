@@ -2,5 +2,6 @@
     "flutterTools.displayGetxContextMenu": true,
     "flutterTools.displayMobxContextMenu": false,
     "flutterTools.displayRiverpodContextMenu": false,
-    "flutterTools.displayModularContextMenu": false
+    "flutterTools.displayModularContextMenu": false,
+    "cmake.sourceDirectory": "C:/Users/ASUS/coba/linux"
 }

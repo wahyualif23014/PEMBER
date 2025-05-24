@@ -11,7 +11,7 @@ class SearchLocationBar extends StatefulWidget {
 }
 
 class _SearchLocationBarState extends State<SearchLocationBar> {
-  String location = 'Surabaya';
+  String location = 'Searching...';
 
   @override
   void initState() {
