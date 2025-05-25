@@ -6,7 +6,7 @@ import 'package:absolute_cinema/screens/edit_profile_screen.dart';
 import 'package:absolute_cinema/themes/colors.dart';
 import 'package:absolute_cinema/widgets/profile_menu_item.dart';
 import 'package:http/http.dart';
-import 'package:absolute_cinema/screens/feedback_screen.dart';
+import 'package:absolute_cinema/screens/view_feedback_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -200,7 +200,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const FeedbackScreen(),
+                            builder: (context) => const ViewFeedbackScreen(),
                           ),
                         );
                       },

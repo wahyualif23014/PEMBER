@@ -1,19 +1,40 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import '../widgets/feedback_form.dart';
 
-class FeedbackScreen extends StatelessWidget {
+class FeedbackScreen extends StatefulWidget {
   const FeedbackScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final Color backgroundColor = Colors.black;
-    final Color cardColor = const Color(0xFF1C1C1E); // iOS-style dark card
-    final Color accentColor = Colors.amber[700]!;
+  State<FeedbackScreen> createState() => _FeedbackScreenState();
+}
 
+class _FeedbackScreenState extends State<FeedbackScreen> {
+  final Color backgroundColor = Colors.black;
+  final Color cardColor = const Color(0xFF1C1C1E);
+  final Color accentColor = Colors.amber[700]!;
+
+  final List<File> _images = [];
+
+  Future<void> _pickImages() async {
+    final ImagePicker picker = ImagePicker();
+    final List<XFile>? pickedFiles = await picker.pickMultiImage();
+
+    if (pickedFiles != null && pickedFiles.isNotEmpty) {
+      setState(() {
+        _images.addAll(pickedFiles.map((file) => File(file.path)));
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
-        title: const Text('Feedback Location'),
+        title: const Text('Feedback'),
         backgroundColor: backgroundColor,
         elevation: 0,
         centerTitle: true,
@@ -21,44 +42,37 @@ class FeedbackScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         children: [
-          // Gambar Lokasi
-          GestureDetector(
-            onLongPress: () {
-              showDialog(
-                context: context,
-                builder: (_) => AlertDialog(
-                  backgroundColor: cardColor,
-                  title: const Text("Simpan Gambar", style: TextStyle(color: Colors.white)),
-                  content: const Text(
-                    "Fitur simpan gambar ke galeri akan segera tersedia.",
-                    style: TextStyle(color: Colors.white70),
-                  ),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.pop(context),
-                      child: Text("Tutup", style: TextStyle(color: accentColor)),
-                    ),
-                  ],
-                ),
-              );
-            },
-            child: Hero(
-              tag: 'locationImage',
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.easeInOut,
-                  child: Image.network(
-                    'https://picsum.photos/400/200',
-                    height: 220,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
+          // Gambar Lokasi Utama
+          ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+            child: Image.network(
+              'https://picsum.photos/400/200',
+              height: 220,
+              width: double.infinity,
+              fit: BoxFit.cover,
             ),
           ),
+          const SizedBox(height: 16),
+
+          // Carousel Gambar yang Diunggah
+          if (_images.isNotEmpty)
+            CarouselSlider(
+              options: CarouselOptions(
+                height: 180,
+                enlargeCenterPage: true,
+                enableInfiniteScroll: false,
+              ),
+              items: _images.map((file) {
+                return ClipRRect(
+                  borderRadius: BorderRadius.circular(16),
+                  child: Image.file(
+                    file,
+                    fit: BoxFit.cover,
+                    width: double.infinity,
+                  ),
+                );
+              }).toList(),
+            ),
 
           const SizedBox(height: 16),
 
@@ -89,7 +103,7 @@ class FeedbackScreen extends StatelessWidget {
 
           const SizedBox(height: 24),
 
-          // Title Feedback
+          // Judul
           const Text(
             "give your feedback",
             style: TextStyle(
@@ -100,7 +114,7 @@ class FeedbackScreen extends StatelessWidget {
           ),
           const SizedBox(height: 12),
 
-          // Form Feedback
+          // Form
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
@@ -109,20 +123,43 @@ class FeedbackScreen extends StatelessWidget {
             ),
             child: const FeedbackForm(),
           ),
-
-          const SizedBox(height: 100), // Supaya tidak tertutup FAB
+          const SizedBox(height: 120), // agar tidak tertutup tombol
         ],
       ),
 
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("Feedback berhasil dikirim!")),
-          );
-        },
-        icon: const Icon(Icons.send),
-        label: const Text("Send"),
-        backgroundColor: accentColor,
+      // Floating Button
+      floatingActionButton: Stack(
+        children: [
+          Positioned(
+            bottom: 16,
+            right: 16,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                FloatingActionButton.extended(
+                  heroTag: 'uploadBtn',
+                  onPressed: _pickImages,
+                  icon: const Icon(Icons.image),
+                  label: const Text("Upload"),
+                  backgroundColor: cardColor,
+                  foregroundColor: accentColor,
+                ),
+                const SizedBox(height: 12),
+                FloatingActionButton.extended(
+                  heroTag: 'sendBtn',
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("Feedback berhasil dikirim!")),
+                    );
+                  },
+                  icon: const Icon(Icons.send),
+                  label: const Text("Send"),
+                  backgroundColor: accentColor,
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
