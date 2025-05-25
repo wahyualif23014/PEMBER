@@ -8,7 +8,7 @@ class TicketService {
   List<Ticket> tickets = [];
 
   // new api endpoint
-  final String baseUrl = 'http://localhost:4000';
+  final String baseUrl = 'https://pember-api-eta.vercel.app';
 
   Future<void> fetchTickets() async {
     try {
