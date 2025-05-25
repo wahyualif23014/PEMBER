@@ -8,7 +8,7 @@ class TicketService {
   List<Ticket> tickets = [];
 
   // new api endpoint
-  final String baseUrl = 'https://pember-api-eta.vercel.app';
+  final String baseUrl = 'http://localhost:4000';
 
   Future<void> fetchTickets() async {
     try {
@@ -51,6 +51,9 @@ class TicketService {
   }
 
   Future<void> addTicketToServer(Ticket ticket, String userId) async {
+    print("masuk sini");
+    print(ticket);
+    print(userId);
     try {
       final res = await http.post(
         Uri.parse('$baseUrl/tickets'),
@@ -58,8 +61,12 @@ class TicketService {
         body: jsonEncode(ticket.toJson(userId: userId)),
       );
 
+      print('❌ Response body: ${res.body}');
+
       if (res.statusCode == 201) {
         await fetchTickets();
+
+        print("Sukses");
 
         // notifikasi
         await NotificationService.awesome_notifications(
@@ -68,6 +75,7 @@ class TicketService {
         );
       }
     } catch (e) {
+      print("e");
       debugPrint("❌ Failed to add ticket: $e");
     }
   }
@@ -103,19 +111,47 @@ class TicketService {
 
   Future<List<String>> fetchBookedSeatsByTitleAndTime(
     String title,
-    String time,
-  ) async {
+    String time, {
+    String? excludeTicketId,
+  }) async {
+    final uri = Uri.parse('$baseUrl/tickets/booked').replace(
+      queryParameters: {
+        'title': title,
+        'show_time': time,
+        if (excludeTicketId != null) 'exclude': excludeTicketId,
+      },
+    );
+
     try {
-      final res = await http.get(
-        Uri.parse('$baseUrl/tickets/booked?title=$title&show_time=$time'),
-      );
+      final res = await http.get(uri);
       if (res.statusCode == 200) {
         final data = jsonDecode(res.body)['data'] as List<dynamic>;
-        return data.map((e) => e['seat_label'].toString()).toList();
+        return data.map((e) => e['seatLabel'].toString()).toList();
       }
     } catch (e) {
       debugPrint("❌ Failed to fetch booked seats: $e");
     }
+
+    return [];
+  }
+
+  Future<List<String>> fetchAllBookedSeats(String title, String time) async {
+    final uri = Uri.parse(
+      '$baseUrl/tickets/booked/strict',
+    ).replace(queryParameters: {'title': title, 'show_time': time});
+
+    try {
+      final res = await http.get(uri);
+      print(res.body);
+
+      if (res.statusCode == 200) {
+        final data = jsonDecode(res.body)['data'] as List<dynamic>;
+        return data.map((e) => e['seatLabel'].toString()).toList();
+      }
+    } catch (e) {
+      debugPrint("❌ Failed to fetch all booked seats: $e");
+    }
+
     return [];
   }
 }
