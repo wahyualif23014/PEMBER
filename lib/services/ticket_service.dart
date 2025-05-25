@@ -7,7 +7,7 @@ import 'notification_service.dart';
 class TicketService {
   List<Ticket> tickets = [];
 
-  final String baseUrl = 'http://localhost:3000';
+  final String baseUrl = 'https://pember-api-eta.vercel.app';
 
   Future<void> fetchTickets() async {
     try {
