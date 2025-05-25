@@ -18,8 +18,8 @@ class Ticket {
   factory Ticket.fromJson(Map<String, dynamic> json) {
     return Ticket(
       id: json['ticket_id'].toString(),
-      movie: Movie.basic(json['movie_title']),
-      seats: (json['seats'] as String).split(','),
+      movie: Movie.fromTitle(json['movie_title']),
+      seats: List<String>.from(json['seats']),
       showtime: json['show_time'],
       totalPrice: json['price'],
     );

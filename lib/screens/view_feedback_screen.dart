@@ -17,7 +17,8 @@ class ViewFeedbackScreen extends StatelessWidget {
         'date': '25 Mei 2025',
         'location': 'Pantai Batu Bolong, Bali',
         'title': 'Tempat Healing Terbaik',
-        'content': 'Pantainya sangat indah dan suasananya tenang. Cocok untuk melepas penat dan menikmati sunset.',
+        'content':
+            'Pantainya sangat indah dan suasananya tenang. Cocok untuk melepas penat dan menikmati sunset.',
         'rating': '★★★★★',
         'images': [
           'https://images.unsplash.com/photo-1572240046450-775a7ef69386?q=80&w=1935&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D,1',
@@ -29,23 +30,12 @@ class ViewFeedbackScreen extends StatelessWidget {
         'date': '24 Mei 2025',
         'location': 'Pantai Batu Bolong, Bali',
         'title': 'Spot Foto Keren',
-        'content': 'Banyak spot bagus buat foto. Tempat bersih dan terawat. Sangat Instagramable!',
+        'content':
+            'Banyak spot bagus buat foto. Tempat bersih dan terawat. Sangat Instagramable!',
         'rating': '★★★★☆',
         'images': [
           'https://images.unsplash.com/photo-1657690230087-7ad267699528?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D,3',
           'https://images.unsplash.com/photo-1657690230087-7ad267699528?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D,4',
-        ],
-      },
-      {
-        'name': 'Gilang Putra',
-        'date': '23 Mei 2025',
-        'location': 'Pantai Batu Bolong, Bali',
-        'title': 'Ramai Tapi Menyenangkan',
-        'content': 'Agak ramai saat weekend, tapi tetap menyenangkan. Pemandangan sangat memukau.',
-        'rating': '★★★★☆',
-        'images': [
-          'https://source.unsplash.com/featured/?crowd,beach,5',
-          'https://source.unsplash.com/featured/?sea,people,6',
         ],
       },
     ];
@@ -132,16 +122,30 @@ class ViewFeedbackScreen extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        const Icon(Icons.calendar_today, size: 16, color: Colors.white60),
+                        const Icon(
+                          Icons.calendar_today,
+                          size: 16,
+                          color: Colors.white60,
+                        ),
                         const SizedBox(width: 6),
-                        Text(item['date'], style: const TextStyle(color: Colors.white60)),
+                        Text(
+                          item['date'],
+                          style: const TextStyle(color: Colors.white60),
+                        ),
                       ],
                     ),
                     Row(
                       children: [
-                        const Icon(Icons.location_on, size: 16, color: Colors.amber),
+                        const Icon(
+                          Icons.location_on,
+                          size: 16,
+                          color: Colors.amber,
+                        ),
                         const SizedBox(width: 6),
-                        Text(item['location'], style: const TextStyle(color: Colors.white70)),
+                        Text(
+                          item['location'],
+                          style: const TextStyle(color: Colors.white70),
+                        ),
                       ],
                     ),
                   ],

@@ -64,7 +64,6 @@ class _FeedbackFormState extends State<FeedbackForm>
               fontSize: 16,
               fontWeight: FontWeight.w600,
               color: textColor,
-              
             ),
           ),
           const SizedBox(height: 8),

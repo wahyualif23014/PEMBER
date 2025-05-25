@@ -88,9 +88,7 @@ class MyApp extends StatelessWidget {
 
           if (!snapshot.data!) {
             return ConnectionStatusWidget(
-              onConnected:
-                  () =>
-                      Get.forceAppUpdate(), // refresh app saat koneksi kembali
+              onConnected: () => Get.forceAppUpdate(),
             );
           }
 

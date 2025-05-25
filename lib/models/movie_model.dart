@@ -28,9 +28,10 @@ class Movie {
     this.homepage,
   });
 
-  factory Movie.fromJson(Map<String, dynamic> json, [String? id = '']) {
+  /// Factory for full detail (from TMDB)
+  factory Movie.fromJson(Map<String, dynamic> json, [String? idOverride]) {
     return Movie(
-      id: id ?? json['id']?.toString() ?? '',
+      id: idOverride ?? json['id']?.toString() ?? '',
       title: json['title'] ?? 'No Title',
       posterPath: json['poster_path'] ?? '',
       rating: (json['vote_average'] ?? 0).toDouble(),
@@ -41,20 +42,22 @@ class Movie {
       tagline: json['tagline'],
       homepage: json['homepage'],
       genres:
-          (json['genres'] as List?)?.map((g) => g['name'] as String).toList(),
+          (json['genres'] as List?)?.map((g) => g['name'].toString()).toList(),
       spokenLanguages:
           (json['spoken_languages'] as List?)
-              ?.map((l) => l['english_name'] as String)
+              ?.map((l) => l['english_name'].toString())
               .toList(),
     );
   }
 
-  factory Movie.basic(String title) {
+  /// Factory for basic use (from ticket)
+  factory Movie.fromTitle(String title) {
     return Movie(id: '', title: title, posterPath: '', rating: 0.0);
   }
 
   Map<String, dynamic> toJson() {
     return {
+      'id': id,
       'title': title,
       'poster_path': posterPath,
       'vote_average': rating,
