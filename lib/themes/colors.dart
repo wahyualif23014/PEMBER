@@ -7,4 +7,7 @@ class AppColors {
   static const Color textColor = Colors.white;
   static const Color skeletonDark = Color(0xFF2E2E2E);
   static const Color skeletonLight = Color(0xFF3D3D3D);
+  static Color backgroundColor = Colors.black;
+  static Color cardColor = const Color(0xFF1C1C1E);
+  static Color accentColor = Colors.amber[700]!;
 }

@@ -193,7 +193,7 @@ class ViewFeedbackScreen extends StatelessWidget {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const FeedbackScreen()),
+            MaterialPageRoute(builder: (context) => FeedbackScreen()),
           );
         },
         icon: const Icon(Icons.add),

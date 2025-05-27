@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:absolute_cinema/models/ticket_model.dart';
 import 'package:absolute_cinema/services/ticket_service.dart';
 import 'package:absolute_cinema/screens/booking_screen.dart';
+import 'package:intl/intl.dart';
 
 class TicketScreen extends StatefulWidget {
   const TicketScreen({super.key});
@@ -13,10 +14,12 @@ class TicketScreen extends StatefulWidget {
 
 class _TicketScreenState extends State<TicketScreen> {
   final TicketService ticketService = TicketService();
+  String getFormattedShowtime(DateTime showtime) {
+    return DateFormat("yyyy-MM-dd HH:mm").format(showtime);
+  }
 
   List<Ticket> userTickets = [];
   bool isLoading = true;
-  
 
   @override
   void initState() {
@@ -50,7 +53,9 @@ class _TicketScreenState extends State<TicketScreen> {
           content: const Text("Ticket deleted successfully"),
           backgroundColor: Colors.green,
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
         ),
       );
     }
@@ -64,117 +69,116 @@ class _TicketScreenState extends State<TicketScreen> {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              Colors.black87,
-              Colors.grey[900]!,
-            ],
+            colors: [Colors.black87, Colors.grey[900]!],
           ),
         ),
-        child: isLoading
-            ? const Center(
-                child: CircularProgressIndicator(
-                  color: Colors.yellow,
-                  strokeWidth: 3,
-                ),
-              )
-            : userTickets.isEmpty
+        child:
+            isLoading
+                ? const Center(
+                  child: CircularProgressIndicator(
+                    color: Colors.yellow,
+                    strokeWidth: 3,
+                  ),
+                )
+                : userTickets.isEmpty
                 ? Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.movie_outlined,
-                          size: 80,
-                          color: Colors.white30,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.movie_outlined,
+                        size: 80,
+                        color: Colors.white30,
+                      ),
+                      const SizedBox(height: 16),
+                      const Text(
+                        "No tickets booked yet.",
+                        style: TextStyle(
+                          color: Colors.white70,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
                         ),
-                        const SizedBox(height: 16),
-                        const Text(
-                          "No tickets booked yet.",
-                          style: TextStyle(
-                            color: Colors.white70,
-                            fontSize: 18,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        const Text(
-                          "Start booking your favorite movies!",
-                          style: TextStyle(
-                            color: Colors.white54,
-                            fontSize: 14,
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
+                      ),
+                      const SizedBox(height: 8),
+                      const Text(
+                        "Start booking your favorite movies!",
+                        style: TextStyle(color: Colors.white54, fontSize: 14),
+                      ),
+                    ],
+                  ),
+                )
                 : ListView.separated(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 20,
-                      horizontal: 16,
-                    ),
-                    itemCount: userTickets.length,
-                    separatorBuilder: (_, __) => const SizedBox(height: 16),
-                    itemBuilder: (context, index) {
-                      final ticket = userTickets[index];
-                      return TicketCard(
-                        ticket: ticket,
-                        onDelete: () async {
-                          final confirm = await showDialog<bool>(
-                            context: context,
-                            builder: (context) => AlertDialog(
-                              backgroundColor: Colors.grey[900],
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              title: const Text(
-                                "Delete Ticket?",
-                                style: TextStyle(color: Colors.white),
-                              ),
-                              content: const Text(
-                                "Are you sure you want to delete this ticket? This action cannot be undone.",
-                                style: TextStyle(color: Colors.white70),
-                              ),
-                              actions: [
-                                TextButton(
-                                  onPressed: () => Navigator.pop(context, false),
-                                  child: const Text(
-                                    "Cancel",
-                                    style: TextStyle(color: Colors.grey),
-                                  ),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 20,
+                    horizontal: 16,
+                  ),
+                  itemCount: userTickets.length,
+                  separatorBuilder: (_, __) => const SizedBox(height: 16),
+                  itemBuilder: (context, index) {
+                    final ticket = userTickets[index];
+                    return TicketCard(
+                      ticket: ticket,
+                      onDelete: () async {
+                        final confirm = await showDialog<bool>(
+                          context: context,
+                          builder:
+                              (context) => AlertDialog(
+                                backgroundColor: Colors.grey[900],
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15),
                                 ),
-                                ElevatedButton(
-                                  onPressed: () => Navigator.pop(context, true),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.red,
-                                    foregroundColor: Colors.white,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8),
+                                title: const Text(
+                                  "Delete Ticket?",
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                                content: const Text(
+                                  "Are you sure you want to delete this ticket? This action cannot be undone.",
+                                  style: TextStyle(color: Colors.white70),
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed:
+                                        () => Navigator.pop(context, false),
+                                    child: const Text(
+                                      "Cancel",
+                                      style: TextStyle(color: Colors.grey),
                                     ),
                                   ),
-                                  child: const Text("Delete"),
-                                ),
-                              ],
-                            ),
-                          );
-
-                          if (confirm == true) {
-                            await _deleteTicket(ticket.id);
-                          }
-                        },
-                        onEdit: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => BookingScreen(
-                                movie: ticket.movie,
-                                editingTicket: ticket,
+                                  ElevatedButton(
+                                    onPressed:
+                                        () => Navigator.pop(context, true),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.red,
+                                      foregroundColor: Colors.white,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                    ),
+                                    child: const Text("Delete"),
+                                  ),
+                                ],
                               ),
-                            ),
-                          ).then((_) => _loadUserTickets());
-                        },
-                      );
-                    },
-                  ),
+                        );
+
+                        if (confirm == true) {
+                          await _deleteTicket(ticket.id);
+                        }
+                      },
+                      onEdit: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder:
+                                (_) => BookingScreen(
+                                  movie: ticket.movie,
+                                  editingTicket: ticket,
+                                ),
+                          ),
+                        ).then((_) => _loadUserTickets());
+                      },
+                    );
+                  },
+                ),
       ),
     );
   }
@@ -182,7 +186,7 @@ class _TicketScreenState extends State<TicketScreen> {
 
 class TicketCard extends StatelessWidget {
   final Ticket ticket;
-  
+
   final VoidCallback onEdit;
   final VoidCallback onDelete;
 
@@ -193,8 +197,6 @@ class TicketCard extends StatelessWidget {
     required this.onDelete,
   });
 
-
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -202,10 +204,7 @@ class TicketCard extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [
-            Colors.grey[900]!,
-            Colors.grey[850]!,
-          ],
+          colors: [Colors.grey[900]!, Colors.grey[850]!],
         ),
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
@@ -285,7 +284,9 @@ class TicketCard extends StatelessWidget {
                               ),
                             ),
                             Text(
-                              ticket.showtime,
+                              DateFormat("yyyy-MM-dd HH:mm").format(
+                                DateTime.parse(ticket.showtime),
+                              ),
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 16,
