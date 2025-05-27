@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';  // jangan lupa add lottie di pubspec.yaml
 import 'package:absolute_cinema/services/ConnectionService.dart';
 
 class ConnectionStatusWidget extends StatefulWidget {
   final VoidCallback onConnected;
 
-  const ConnectionStatusWidget({Key? key, required this.onConnected}) : super(key: key);
+  const ConnectionStatusWidget({Key? key, required this.onConnected})
+    : super(key: key);
 
   @override
   State<ConnectionStatusWidget> createState() => _ConnectionStatusWidgetState();
@@ -18,16 +18,15 @@ class _ConnectionStatusWidgetState extends State<ConnectionStatusWidget> {
     setState(() {
       _isChecking = true;
     });
+
     bool isConnected = await ConnectionService.checkConnection();
+
     setState(() {
       _isChecking = false;
     });
+
     if (isConnected) {
       widget.onConnected();
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('No internet connection. Please try again.')),
-      );
     }
   }
 
@@ -37,16 +36,41 @@ class _ConnectionStatusWidgetState extends State<ConnectionStatusWidget> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // Ganti path ini dengan file Lottie animasi offline kamu
-          Lottie.network('https://lottie.host/9b3fb559-858d-4dbb-9e00-54b0aa38e81e/hi9cNEBLpi.json', width: 200, height: 200, repeat: true),
-          SizedBox(height: 20),
+          const Icon(Icons.wifi_off_rounded, size: 100, color: Colors.white54),
+          const SizedBox(height: 20),
+          const Text(
+            'No Internet Connection',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w600,
+              color: Colors.white,
+            ),
+          ),
+          const SizedBox(height: 10),
+          const Text(
+            'Please check your connection and try again.',
+            textAlign: TextAlign.center,
+            style: TextStyle(color: Colors.white70, fontSize: 15),
+          ),
+          const SizedBox(height: 30),
           _isChecking
-              ? CircularProgressIndicator()
+              ? const CircularProgressIndicator(color: Colors.amber)
               : ElevatedButton.icon(
-                  onPressed: _checkConnection,
-                  icon: Icon(Icons.refresh),
-                  label: Text('Refresh'),
+                onPressed: _checkConnection,
+                icon: const Icon(Icons.refresh),
+                label: const Text('Retry'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.amber,
+                  foregroundColor: Colors.black,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 12,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
                 ),
+              ),
         ],
       ),
     );
