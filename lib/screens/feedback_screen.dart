@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -8,6 +9,7 @@ import 'package:gal/gal.dart';
 import 'package:geocoding/geocoding.dart';
 import '../widgets/feedback_form.dart';
 import '../themes/colors.dart';
+import '../services/feedback_service.dart';
 
 class FeedbackScreen extends StatefulWidget {
   @override
@@ -20,10 +22,13 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
   bool _isLocationEnabled = false;
   bool _isLoadingLocation = false;
 
+  // Controllers for form data
+  final GlobalKey<FeedbackFormState> _feedbackFormKey =
+      GlobalKey<FeedbackFormState>();
+
   @override
   void initState() {
     super.initState();
-    if (!mounted) return;
     _initializeApp();
   }
 
@@ -62,7 +67,6 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
   }
 
   Future<void> _checkLocationStatus() async {
-    if (!mounted) return;
     setState(() {
       _isLoadingLocation = true;
     });
@@ -71,7 +75,6 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
       bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
       LocationPermission permission = await Geolocator.checkPermission();
 
-      if (!mounted) return;
       setState(() {
         _isLocationEnabled =
             serviceEnabled &&
@@ -366,7 +369,8 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
       }
 
       Position? position;
-      String locationText = isFromCamera ? "📍 Lokasi tidak tersedia" : "";
+      String locationText =
+          isFromCamera ? "📍 Lokasi tidak tersedia" : "no location";
 
       if (isFromCamera && _isLocationEnabled) {
         try {
@@ -557,8 +561,26 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
     );
   }
 
-  // send confirmation info
+  // send confirmation info with API integration
   void _showSendConfirmation() {
+    // Get form data from the form widget
+    final formData = _feedbackFormKey.currentState?.getFormData();
+
+    if (formData == null) {
+      _showErrorSnackBar('Please fill in the form data');
+      return;
+    }
+
+    if (formData['title'].isEmpty || formData['description'].isEmpty) {
+      _showErrorSnackBar('Please fill in title and description');
+      return;
+    }
+
+    if (_imagesWithLocation.isEmpty) {
+      _showErrorSnackBar('Please add at least one image');
+      return;
+    }
+
     showDialog(
       context: context,
       builder:
@@ -573,6 +595,16 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
+                  'Title: ${formData['title']}',
+                  style: const TextStyle(color: Colors.white70, fontSize: 12),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Rating: ${formData['rating']}',
+                  style: const TextStyle(color: Colors.white70, fontSize: 12),
+                ),
+                const SizedBox(height: 4),
+                Text(
                   'number of images: ${_imagesWithLocation.length}',
                   style: const TextStyle(color: Colors.white70),
                 ),
@@ -583,7 +615,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Successfuly sent feedback',
+                  'Ready to send feedback to server',
                   style: const TextStyle(color: Colors.white70, fontSize: 12),
                 ),
               ],
@@ -597,14 +629,9 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                 ),
               ),
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text("Feedback sent successfully!"),
-                      backgroundColor: Colors.green,
-                    ),
-                  );
+                  await _uploadFeedback(formData);
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.accentColor,
@@ -617,6 +644,81 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
             ],
           ),
     );
+  }
+
+  // Upload feedback using the service
+  Future<void> _uploadFeedback(Map<String, dynamic> formData) async {
+    // Show loading dialog
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder:
+          (context) => AlertDialog(
+            backgroundColor: AppColors.cardColor,
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const CircularProgressIndicator(),
+                const SizedBox(height: 16),
+                const Text(
+                  'Uploading feedback...',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ],
+            ),
+          ),
+    );
+
+    try {
+      // Get the first image (you can modify this to handle multiple images)
+      final firstImage = _imagesWithLocation.first;
+      final imageFile = firstImage['file'] as File;
+      final imageLocation = firstImage['location'] as String;
+
+      final currentUser = FirebaseAuth.instance.currentUser;
+      final userId = currentUser?.uid;
+
+      if (userId == null) {
+        Navigator.pop(context);
+        _showErrorSnackBar('User not logged in');
+        return;
+      }
+
+      final success = await FeedbackService.uploadFeedback(
+        userId: userId,
+        title: formData['title'],
+        desctiption: formData['description'],
+        location: imageLocation,
+        rating: formData['rating'].toString(),
+        image: imageFile,
+      );
+
+      // Close loading dialog
+      Navigator.pop(context);
+
+      if (success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Feedback sent successfully!"),
+            backgroundColor: Colors.green,
+          ),
+        );
+
+        Navigator.pop(context, true);
+
+        // Clear form and images after successful upload
+        setState(() {
+          _imagesWithLocation.clear();
+        });
+        _feedbackFormKey.currentState?.clearForm();
+      } else {
+        _showErrorSnackBar('Failed to upload feedback. Please try again.');
+      }
+    } catch (e) {
+      // Close loading dialog
+      Navigator.pop(context);
+      _showErrorSnackBar('Error uploading feedback: ${e.toString()}');
+    }
   }
 
   Widget _buildImageLocationInfo(Map<String, dynamic> imageData) {
@@ -802,7 +904,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
               color: AppColors.cardColor,
               borderRadius: BorderRadius.circular(16),
             ),
-            child: const FeedbackForm(),
+            child: FeedbackForm(key: _feedbackFormKey),
           ),
           const SizedBox(height: 160),
         ],
@@ -846,7 +948,8 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
-                          content: Text("Feedback sent successfully!"),
+                          content: Text("Please add at least one image first!"),
+                          backgroundColor: Colors.orange,
                         ),
                       );
                     }

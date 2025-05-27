@@ -6,13 +6,15 @@ class FeedbackForm extends StatefulWidget {
   const FeedbackForm({super.key});
 
   @override
-  State<FeedbackForm> createState() => _FeedbackFormState();
+  FeedbackFormState createState() => FeedbackFormState();
 }
 
-class _FeedbackFormState extends State<FeedbackForm>
+class FeedbackFormState extends State<FeedbackForm>
     with SingleTickerProviderStateMixin {
-  final _controller = TextEditingController();
+  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _descController = TextEditingController();
   double _rating = 3.0;
+
   late AnimationController _animController;
   late Animation<double> _fadeIn;
 
@@ -29,9 +31,27 @@ class _FeedbackFormState extends State<FeedbackForm>
 
   @override
   void dispose() {
-    _controller.dispose();
+    _titleController.dispose();
+    _descController.dispose();
     _animController.dispose();
     super.dispose();
+  }
+
+  // 🔄 Mengambil data dari form
+  Map<String, dynamic> getFormData() {
+    return {
+      'title': _titleController.text.trim(),
+      'description': _descController.text.trim(),
+      'rating': _rating,
+    };
+  }
+
+  void clearForm() {
+    _titleController.clear();
+    _descController.clear();
+    setState(() {
+      _rating = 3.0;
+    });
   }
 
   @override
@@ -45,7 +65,6 @@ class _FeedbackFormState extends State<FeedbackForm>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // 🎞️ Lottie animation
           Center(
             child: SizedBox(
               height: 200,
@@ -57,7 +76,6 @@ class _FeedbackFormState extends State<FeedbackForm>
           ),
           const SizedBox(height: 10),
 
-          // 🌟 Bintang Penilaian
           Text(
             "give an assessment",
             style: TextStyle(
@@ -88,13 +106,41 @@ class _FeedbackFormState extends State<FeedbackForm>
           Center(
             child: Text(
               _rating.toStringAsFixed(1),
-              style: TextStyle(color: Colors.white70),
+              style: const TextStyle(color: Colors.white70),
             ),
           ),
 
           const SizedBox(height: 24),
 
-          // 📝 Tulis Feedback
+          // 🏷️ Input Judul
+          Text(
+            "feedback title",
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              color: textColor,
+            ),
+          ),
+          const SizedBox(height: 8),
+          TextField(
+            controller: _titleController,
+            style: TextStyle(color: textColor),
+            decoration: InputDecoration(
+              hintText: 'enter feedback title',
+              hintStyle: const TextStyle(color: Colors.white38),
+              filled: true,
+              fillColor: fieldColor,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(14),
+                borderSide: BorderSide.none,
+              ),
+              contentPadding: const EdgeInsets.all(14),
+            ),
+          ),
+
+          const SizedBox(height: 24),
+
+          // 📝 Deskripsi
           Text(
             "give your feedback",
             style: TextStyle(
@@ -104,9 +150,8 @@ class _FeedbackFormState extends State<FeedbackForm>
             ),
           ),
           const SizedBox(height: 8),
-
           TextField(
-            controller: _controller,
+            controller: _descController,
             maxLines: 4,
             style: TextStyle(color: textColor),
             decoration: InputDecoration(
