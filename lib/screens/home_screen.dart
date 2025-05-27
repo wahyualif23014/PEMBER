@@ -29,6 +29,8 @@ class _HomeScreenState extends State<HomeScreen> {
     final nowPlaying = await movieService.fetchNowPlayingMovies();
     final upcoming = await movieService.fetchUpcomingMovies();
 
+    if (!mounted) return;
+
     if (nowPlaying.isNotEmpty && upcoming.isNotEmpty) {
       setState(() {
         nowPlayingMovies = nowPlaying;

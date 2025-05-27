@@ -15,8 +15,6 @@ class FeedbackScreen extends StatefulWidget {
 }
 
 class _FeedbackScreenState extends State<FeedbackScreen> {
-  
-
   final List<Map<String, dynamic>> _imagesWithLocation = [];
   String _currentLocation = "Lokasi tidak tersedia";
   bool _isLocationEnabled = false;
@@ -25,6 +23,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
   @override
   void initState() {
     super.initState();
+    if (!mounted) return;
     _initializeApp();
   }
 
@@ -63,6 +62,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
   }
 
   Future<void> _checkLocationStatus() async {
+    if (!mounted) return;
     setState(() {
       _isLoadingLocation = true;
     });
@@ -71,6 +71,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
       bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
       LocationPermission permission = await Geolocator.checkPermission();
 
+      if (!mounted) return;
       setState(() {
         _isLocationEnabled =
             serviceEnabled &&
@@ -238,7 +239,10 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
         );
 
         if (photo != null) {
-          await _showSaveToGalleryConfirmation(File(photo.path), isFromCamera: true);
+          await _showSaveToGalleryConfirmation(
+            File(photo.path),
+            isFromCamera: true,
+          );
         }
       } catch (e) {
         print('Error taking photo: $e');
@@ -285,7 +289,10 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
 
       if (pickedFiles != null && pickedFiles.isNotEmpty) {
         for (XFile file in pickedFiles) {
-          await _showSaveToGalleryConfirmation(File(file.path), isFromCamera: false);
+          await _showSaveToGalleryConfirmation(
+            File(file.path),
+            isFromCamera: false,
+          );
         }
       }
     } catch (e) {
@@ -293,165 +300,192 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
       _showErrorSnackBar('Error mengakses galeri: ${e.toString()}');
     }
   }
-// pemlilihan iya atau tidak 
-Future<void> _showSaveToGalleryConfirmation(File imageFile, {required bool isFromCamera}) async {
-  await showDialog(
-    context: context,
-    builder: (context) => AlertDialog(
-      backgroundColor: AppColors.cardColor,
-      title: const Text('Simpan ke Galeri?', style: TextStyle(color: Colors.white)),
-      content: const Text(
-        'Do you want to save this image to gallery?\nIf not, the image will only be displayed in the app.',
-        style: TextStyle(color: Colors.white70),
-      ),
-      actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.pop(context);
-            _processImage(imageFile, isFromCamera: isFromCamera, saveToGallery: false);
-          },
-          child: const Text('No', style: TextStyle(color: Colors.grey)),
-        ),
-        ElevatedButton(
-          onPressed: () {
-            Navigator.pop(context);
-            _processImage(imageFile, isFromCamera: isFromCamera, saveToGallery: true);
-          },
-          style: ElevatedButton.styleFrom(backgroundColor: AppColors.accentColor),
-          child: const Text('Yes, Save', style: TextStyle(color: Colors.black)),
-        ),
-      ],
-    ),
-  );
-}
 
-// simpan di galeri atau tidak
+  // pemlilihan iya atau tidak
+  Future<void> _showSaveToGalleryConfirmation(
+    File imageFile, {
+    required bool isFromCamera,
+  }) async {
+    await showDialog(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            backgroundColor: AppColors.cardColor,
+            title: const Text(
+              'Simpan ke Galeri?',
+              style: TextStyle(color: Colors.white),
+            ),
+            content: const Text(
+              'Do you want to save this image to gallery?\nIf not, the image will only be displayed in the app.',
+              style: TextStyle(color: Colors.white70),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  _processImage(
+                    imageFile,
+                    isFromCamera: isFromCamera,
+                    saveToGallery: false,
+                  );
+                },
+                child: const Text('No', style: TextStyle(color: Colors.grey)),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  _processImage(
+                    imageFile,
+                    isFromCamera: isFromCamera,
+                    saveToGallery: true,
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.accentColor,
+                ),
+                child: const Text(
+                  'Yes, Save',
+                  style: TextStyle(color: Colors.black),
+                ),
+              ),
+            ],
+          ),
+    );
+  }
+
+  // simpan di galeri atau tidak
   Future<void> _processImage(
-  File imageFile, {
-  required bool isFromCamera,
-  required bool saveToGallery,
-}) async {
-  try {
-    if (!await imageFile.exists()) {
-      _showErrorSnackBar('Image file not found');
-      return;
-    }
-
-    Position? position;
-    String locationText = isFromCamera ? "📍 Lokasi tidak tersedia" : "";
-
-    if (isFromCamera && _isLocationEnabled) {
-      try {
-        position = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.high,
-          timeLimit: const Duration(seconds: 5),
-        );
-
-        List<Placemark> placemarks = await placemarkFromCoordinates(
-          position.latitude,
-          position.longitude,
-        );
-
-        if (placemarks.isNotEmpty) {
-          Placemark place = placemarks[0];
-          locationText =
-              "${place.subLocality ?? ''} ${place.locality ?? ''}, ${place.administrativeArea ?? ''}".trim();
-
-          if (locationText.isEmpty) {
-            locationText =
-                "${position.latitude.toStringAsFixed(6)}, ${position.longitude.toStringAsFixed(6)}";
-          }
-
-          locationText = "$locationText";
-        }
-      } catch (e) {
-        print('Error getting photo location: $e');
-        locationText = "Failed to get location";
-      }
-    }
-
-    bool savedToGallery = false;
-    String saveMessage = '';
-
-    if (saveToGallery) {
-      try {
-        await Gal.putImage(imageFile.path, album: 'Feedback Photos');
-        savedToGallery = true;
-        saveMessage = isFromCamera
-            ? '📸 Image saved to album "Feedback Photos"\n$locationText'
-            : '✅ Image successfully added to album "Feedback Photos"';
-        print('Successfully saved to custom album');
-      } catch (customAlbumError) {
-        print('Error saving to custom album: $customAlbumError');
-        try {
-          await Gal.putImage(imageFile.path);
-          savedToGallery = true;
-          saveMessage = isFromCamera
-              ? '📸 Image saved to default gallery\n$locationText'
-              : '✅ Image successfully added to gallery';
-          print('Successfully saved to default gallery');
-        } catch (defaultGalleryError) {
-          print('Error saving to default gallery: $defaultGalleryError');
-          savedToGallery = false;
-          saveMessage = '⚠️ Failed to save to gallery, only displayed in app\n$locationText';
-        }
-      }
-    } else {
-      savedToGallery = false;
-      saveMessage = '📁 Image only added to app (not saved to gallery)\n$locationText';
-    }
-
-    if (mounted) {
-      setState(() {
-        _imagesWithLocation.add({
-          'file': imageFile,
-          'location': locationText,
-          'position': position,
-          'timestamp': DateTime.now(),
-          'savedToGallery': savedToGallery,
-        });
-      });
-
-      Color snackBarColor = savedToGallery ? AppColors.accentColor : Colors.orange;
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(saveMessage),
-          backgroundColor: snackBarColor,
-          duration: const Duration(seconds: 4),
-          action: !savedToGallery
-              ? SnackBarAction(
-                  label: 'Retry',
-                  textColor: Colors.white,
-                  onPressed: () => _retryGallerySave(imageFile),
-                )
-              : null,
-        ),
-      );
-    }
-  } catch (mainError) {
-    print('Critical error in _processImage: $mainError');
+    File imageFile, {
+    required bool isFromCamera,
+    required bool saveToGallery,
+  }) async {
     try {
+      if (!await imageFile.exists()) {
+        _showErrorSnackBar('Image file not found');
+        return;
+      }
+
+      Position? position;
+      String locationText = isFromCamera ? "📍 Lokasi tidak tersedia" : "";
+
+      if (isFromCamera && _isLocationEnabled) {
+        try {
+          position = await Geolocator.getCurrentPosition(
+            desiredAccuracy: LocationAccuracy.high,
+            timeLimit: const Duration(seconds: 5),
+          );
+
+          List<Placemark> placemarks = await placemarkFromCoordinates(
+            position.latitude,
+            position.longitude,
+          );
+
+          if (placemarks.isNotEmpty) {
+            Placemark place = placemarks[0];
+            locationText =
+                "${place.subLocality ?? ''} ${place.locality ?? ''}, ${place.administrativeArea ?? ''}"
+                    .trim();
+
+            if (locationText.isEmpty) {
+              locationText =
+                  "${position.latitude.toStringAsFixed(6)}, ${position.longitude.toStringAsFixed(6)}";
+            }
+
+            locationText = "$locationText";
+          }
+        } catch (e) {
+          print('Error getting photo location: $e');
+          locationText = "Failed to get location";
+        }
+      }
+
+      bool savedToGallery = false;
+      String saveMessage = '';
+
+      if (saveToGallery) {
+        try {
+          await Gal.putImage(imageFile.path, album: 'Feedback Photos');
+          savedToGallery = true;
+          saveMessage =
+              isFromCamera
+                  ? '📸 Image saved to album "Feedback Photos"\n$locationText'
+                  : '✅ Image successfully added to album "Feedback Photos"';
+          print('Successfully saved to custom album');
+        } catch (customAlbumError) {
+          print('Error saving to custom album: $customAlbumError');
+          try {
+            await Gal.putImage(imageFile.path);
+            savedToGallery = true;
+            saveMessage =
+                isFromCamera
+                    ? '📸 Image saved to default gallery\n$locationText'
+                    : '✅ Image successfully added to gallery';
+            print('Successfully saved to default gallery');
+          } catch (defaultGalleryError) {
+            print('Error saving to default gallery: $defaultGalleryError');
+            savedToGallery = false;
+            saveMessage =
+                '⚠️ Failed to save to gallery, only displayed in app\n$locationText';
+          }
+        }
+      } else {
+        savedToGallery = false;
+        saveMessage =
+            '📁 Image only added to app (not saved to gallery)\n$locationText';
+      }
+
       if (mounted) {
         setState(() {
           _imagesWithLocation.add({
             'file': imageFile,
-            'location': "Error: Failed to process",
-            'position': null,
+            'location': locationText,
+            'position': position,
             'timestamp': DateTime.now(),
-            'savedToGallery': false,
-            'hasError': true,
+            'savedToGallery': savedToGallery,
           });
         });
+
+        Color snackBarColor =
+            savedToGallery ? AppColors.accentColor : Colors.orange;
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(saveMessage),
+            backgroundColor: snackBarColor,
+            duration: const Duration(seconds: 4),
+            action:
+                !savedToGallery
+                    ? SnackBarAction(
+                      label: 'Retry',
+                      textColor: Colors.white,
+                      onPressed: () => _retryGallerySave(imageFile),
+                    )
+                    : null,
+          ),
+        );
       }
-    } catch (stateError) {
-      print('Error even adding to state: $stateError');
+    } catch (mainError) {
+      print('Critical error in _processImage: $mainError');
+      try {
+        if (mounted) {
+          setState(() {
+            _imagesWithLocation.add({
+              'file': imageFile,
+              'location': "Error: Failed to process",
+              'position': null,
+              'timestamp': DateTime.now(),
+              'savedToGallery': false,
+              'hasError': true,
+            });
+          });
+        }
+      } catch (stateError) {
+        print('Error even adding to state: $stateError');
+      }
+
+      _showErrorSnackBar('Failed to process photo: ${mainError.toString()}');
     }
-
-    _showErrorSnackBar('Failed to process photo: ${mainError.toString()}');
   }
-}
-
 
   // Method helper untuk retry save ke galeri
   Future<void> _retryGallerySave(File imageFile) async {
@@ -482,6 +516,7 @@ Future<void> _showSaveToGalleryConfirmation(File imageFile, {required bool isFro
       );
     }
   }
+
   // Method untuk menghapus foto dari daftar
   void _removeImage(int index) {
     showDialog(
@@ -512,59 +547,75 @@ Future<void> _showSaveToGalleryConfirmation(File imageFile, {required bool isFro
                     _imagesWithLocation.removeAt(index);
                   });
                 },
-                child: const Text('Delete', style: TextStyle(color: Colors.red)),
+                child: const Text(
+                  'Delete',
+                  style: TextStyle(color: Colors.red),
+                ),
               ),
             ],
           ),
     );
   }
+
   // send confirmation info
   void _showSendConfirmation() {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: AppColors.cardColor,
-        title: const Text('Send Feedback', style: TextStyle(color: Colors.white)),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'number of images: ${_imagesWithLocation.length}',
-              style: const TextStyle(color: Colors.white70),
+      builder:
+          (context) => AlertDialog(
+            backgroundColor: AppColors.cardColor,
+            title: const Text(
+              'Send Feedback',
+              style: TextStyle(color: Colors.white),
             ),
-            const SizedBox(height: 8),
-            Text(
-              'Location: $_currentLocation',
-              style: const TextStyle(color: Colors.white70, fontSize: 12),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Successfuly sent feedback',
-              style: const TextStyle(color: Colors.white70, fontSize: 12),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel', style: TextStyle(color: Colors.grey)),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text("Feedback sent successfully!"),
-                  backgroundColor: Colors.green,
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'number of images: ${_imagesWithLocation.length}',
+                  style: const TextStyle(color: Colors.white70),
                 ),
-              );
-            },
-            style: ElevatedButton.styleFrom(backgroundColor: AppColors.accentColor),
-            child: const Text('Send', style: TextStyle(color: Colors.black)),
+                const SizedBox(height: 8),
+                Text(
+                  'Location: $_currentLocation',
+                  style: const TextStyle(color: Colors.white70, fontSize: 12),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Successfuly sent feedback',
+                  style: const TextStyle(color: Colors.white70, fontSize: 12),
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text(
+                  'Cancel',
+                  style: TextStyle(color: Colors.grey),
+                ),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("Feedback sent successfully!"),
+                      backgroundColor: Colors.green,
+                    ),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.accentColor,
+                ),
+                child: const Text(
+                  'Send',
+                  style: TextStyle(color: Colors.black),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 
@@ -597,7 +648,8 @@ Future<void> _showSaveToGalleryConfirmation(File imageFile, {required bool isFro
       ),
     );
   }
-// desain 
+
+  // desain
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -815,6 +867,4 @@ Future<void> _showSaveToGalleryConfirmation(File imageFile, {required bool isFro
   String _formatDateTime(DateTime dateTime) {
     return "${dateTime.day}/${dateTime.month} ${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}";
   }
-
-  
 }

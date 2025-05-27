@@ -52,6 +52,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       }
     } catch (e) {
       print("Error loading profile: $e");
+
       if (mounted) {
         setState(() {
           isLoading = false;
@@ -70,6 +71,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
               email: email ?? '',
               profileImage: profileImage,
               onSave: (newUsername, newEmail, newImagePath) {
+                if (!mounted) return;
+
                 setState(() {
                   username = newUsername;
                   email = newEmail;

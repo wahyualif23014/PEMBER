@@ -31,6 +31,7 @@ class _TicketScreenState extends State<TicketScreen> {
   Future<void> _loadUserTickets() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) {
+      if (!mounted) return;
       setState(() => isLoading = false);
       return;
     }
@@ -38,6 +39,7 @@ class _TicketScreenState extends State<TicketScreen> {
     await ticketService.fetchTicketsByUserId(user.uid);
     print("Tickets fetched: ${ticketService.tickets}");
 
+    if (!mounted) return;
     setState(() {
       userTickets = ticketService.tickets;
       isLoading = false;
@@ -284,9 +286,9 @@ class TicketCard extends StatelessWidget {
                               ),
                             ),
                             Text(
-                              DateFormat("yyyy-MM-dd HH:mm").format(
-                                DateTime.parse(ticket.showtime),
-                              ),
+                              DateFormat(
+                                "yyyy-MM-dd HH:mm",
+                              ).format(DateTime.parse(ticket.showtime)),
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 16,
