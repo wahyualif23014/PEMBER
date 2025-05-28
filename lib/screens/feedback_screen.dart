@@ -39,7 +39,6 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
 
   Future<void> _checkAllPermissions() async {
     try {
-      // Cek permission kamera
       var cameraStatus = await Permission.camera.status;
       if (!cameraStatus.isGranted) {
         await Permission.camera.request();
@@ -356,7 +355,6 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
     );
   }
 
-  // simpan di galeri atau tidak
   Future<void> _processImage(
     File imageFile, {
     required bool isFromCamera,

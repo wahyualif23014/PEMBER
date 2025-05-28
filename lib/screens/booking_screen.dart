@@ -2,13 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:uuid/uuid.dart';
 import 'package:lottie/lottie.dart';
-
 import '../models/movie_model.dart';
 import '../models/ticket_model.dart';
 import '../services/ticket_service.dart';
 import '../widgets/seat_selection_widget.dart';
 import '../widgets/time_selector_widget.dart';
-
 class BookingScreen extends StatefulWidget {
   final Movie movie;
   final Ticket? editingTicket;

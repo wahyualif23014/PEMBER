@@ -1,6 +1,9 @@
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:http/http.dart' as http;
+import 'package:gal/gal.dart';
 import '../models/feedback_model.dart';
 import '../services/feedback_service.dart';
 import 'feedback_screen.dart';
@@ -16,7 +19,7 @@ class _ViewFeedbackScreenState extends State<ViewFeedbackScreen> {
   List<FeedbackModel> feedbackList = [];
   bool isLoading = true;
   String? error;
-  final Map<String, String> userNames = {}; // Cache for UID to name
+  final Map<String, String> userNames = {};
 
   @override
   void initState() {
@@ -53,6 +56,59 @@ class _ViewFeedbackScreenState extends State<ViewFeedbackScreen> {
     }
   }
 
+  Future<void> downloadImage(String imageUrl, BuildContext context) async {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const Center(child: CircularProgressIndicator()),
+    );
+
+    try {
+      final hasAccess = await Gal.hasAccess();
+      if (!hasAccess) {
+        final granted = await Gal.requestAccess();
+        if (!granted) {
+          Navigator.pop(context);
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('❌ Permission denied to save image'),
+              backgroundColor: Colors.red,
+            ),
+          );
+          return;
+        }
+      }
+
+      final response = await http.get(Uri.parse(imageUrl));
+      if (response.statusCode != 200) {
+        throw Exception('Failed to download image');
+      }
+
+      final Uint8List bytes = response.bodyBytes;
+
+      await Gal.putImageBytes(bytes);
+
+      Navigator.pop(context);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('✅ Image saved to gallery successfully!'),
+          backgroundColor: Colors.green,
+        ),
+      );
+    } catch (e) {
+      Navigator.pop(context); // Close loading dialog
+      print('Error downloading image: $e');
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('❌ Failed to save image: ${e.toString()}'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final backgroundColor = Colors.black;
@@ -72,9 +128,50 @@ class _ViewFeedbackScreenState extends State<ViewFeedbackScreen> {
               ? const Center(child: CircularProgressIndicator())
               : error != null
               ? Center(
-                child: Text(
-                  '❌ $error',
-                  style: const TextStyle(color: Colors.red),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(
+                      Icons.error_outline,
+                      size: 64,
+                      color: Colors.red,
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      '❌ $error',
+                      style: const TextStyle(color: Colors.red),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          isLoading = true;
+                          error = null;
+                        });
+                        fetchFeedback();
+                      },
+                      child: const Text('Retry'),
+                    ),
+                  ],
+                ),
+              )
+              : feedbackList.isEmpty
+              ? Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.feedback_outlined,
+                      size: 64,
+                      color: Colors.white60,
+                    ),
+                    const SizedBox(height: 16),
+                    const Text(
+                      'No feedback available',
+                      style: TextStyle(color: Colors.white60, fontSize: 18),
+                    ),
+                  ],
                 ),
               )
               : ListView.builder(
@@ -95,9 +192,17 @@ class _ViewFeedbackScreenState extends State<ViewFeedbackScreen> {
                         decoration: BoxDecoration(
                           color: cardColor,
                           borderRadius: BorderRadius.circular(16),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black26,
+                              blurRadius: 8,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
                         ),
                         child: Column(
                           children: [
+                            // User info section
                             Column(
                               children: [
                                 CircleAvatar(
@@ -124,16 +229,95 @@ class _ViewFeedbackScreenState extends State<ViewFeedbackScreen> {
                               ],
                             ),
                             const SizedBox(height: 16),
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(12),
-                              child: Image.network(
-                                item.image,
-                                height: 180,
-                                width: double.infinity,
-                                fit: BoxFit.cover,
-                              ),
+
+                            // Image section with download button
+                            Stack(
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(12),
+                                  child: Image.network(
+                                    item.image,
+                                    height: 180,
+                                    width: double.infinity,
+                                    fit: BoxFit.cover,
+                                    loadingBuilder: (
+                                      context,
+                                      child,
+                                      loadingProgress,
+                                    ) {
+                                      if (loadingProgress == null) return child;
+                                      return Container(
+                                        height: 180,
+                                        width: double.infinity,
+                                        color: Colors.grey[800],
+                                        child: const Center(
+                                          child: CircularProgressIndicator(),
+                                        ),
+                                      );
+                                    },
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return Container(
+                                        height: 180,
+                                        width: double.infinity,
+                                        color: Colors.grey[800],
+                                        child: const Center(
+                                          child: Icon(
+                                            Icons.error_outline,
+                                            color: Colors.white60,
+                                            size: 48,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                                Positioned(
+                                  bottom: 8,
+                                  right: 8,
+                                  child: GestureDetector(
+                                    onTap:
+                                        () =>
+                                            downloadImage(item.image, context),
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 12,
+                                        vertical: 6,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: Colors.black54,
+                                        borderRadius: BorderRadius.circular(20),
+                                        border: Border.all(
+                                          color: Colors.white24,
+                                          width: 1,
+                                        ),
+                                      ),
+                                      child: const Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Icon(
+                                            Icons.download,
+                                            size: 16,
+                                            color: Colors.white,
+                                          ),
+                                          SizedBox(width: 4),
+                                          Text(
+                                            "Download",
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                             const SizedBox(height: 8),
+
+                            // Page indicator (simplified since only 1 image)
                             SmoothPageIndicator(
                               controller: controller,
                               count: 1,
@@ -145,6 +329,8 @@ class _ViewFeedbackScreenState extends State<ViewFeedbackScreen> {
                               ),
                             ),
                             const SizedBox(height: 16),
+
+                            // Date and location row
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -190,6 +376,8 @@ class _ViewFeedbackScreenState extends State<ViewFeedbackScreen> {
                               ],
                             ),
                             const Divider(color: Colors.white24, height: 24),
+
+                            // Title
                             Align(
                               alignment: Alignment.centerLeft,
                               child: Text(
@@ -202,6 +390,8 @@ class _ViewFeedbackScreenState extends State<ViewFeedbackScreen> {
                               ),
                             ),
                             const SizedBox(height: 8),
+
+                            // Description
                             Align(
                               alignment: Alignment.centerLeft,
                               child: Text(
@@ -213,13 +403,26 @@ class _ViewFeedbackScreenState extends State<ViewFeedbackScreen> {
                               ),
                             ),
                             const SizedBox(height: 12),
+
+                            // Rating
                             Align(
                               alignment: Alignment.centerRight,
-                              child: Text(
-                                '⭐ ${item.rating}',
-                                style: TextStyle(
-                                  color: accentColor,
-                                  fontSize: 18,
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 4,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: accentColor.withOpacity(0.2),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Text(
+                                  '⭐ ${item.rating}',
+                                  style: TextStyle(
+                                    color: accentColor,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
                             ),

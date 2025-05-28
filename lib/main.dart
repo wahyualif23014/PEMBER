@@ -18,7 +18,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   AwesomeNotifications().initialize(
-    'resource://mipmap/ic_launcher', // icon aplikasi
+    'resource://mipmap/ic_launcher',
     [
       NotificationChannel(
         channelGroupKey: 'basic_channel_group',

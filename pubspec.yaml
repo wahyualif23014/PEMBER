@@ -43,9 +43,6 @@ dependencies:
   mime: ^2.0.0
   supabase_flutter: ^2.9.0
 
-
-
-
 dev_dependencies:
   flutter_test:
     sdk: flutter

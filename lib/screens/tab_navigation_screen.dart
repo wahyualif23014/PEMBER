@@ -27,7 +27,6 @@ class _TabNavigationScreenState extends State<TabNavigationScreen> {
   @override
   Widget build(BuildContext context) {
     return ConnectionOverlayWrapper(
-      // ✅ Bungkus di sini
       child: Scaffold(
         backgroundColor: AppColors.background,
         appBar:
