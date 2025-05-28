@@ -5,7 +5,6 @@ import 'package:lottie/lottie.dart';
 
 import '../models/movie_model.dart';
 import '../models/ticket_model.dart';
-import '../services/notification_service.dart';
 import '../services/ticket_service.dart';
 import '../widgets/seat_selection_widget.dart';
 import '../widgets/time_selector_widget.dart';

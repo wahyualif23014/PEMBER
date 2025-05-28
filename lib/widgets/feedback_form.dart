@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import '../themes/colors.dart';
 
 class FeedbackForm extends StatefulWidget {
   const FeedbackForm({super.key});
@@ -37,7 +38,7 @@ class FeedbackFormState extends State<FeedbackForm>
     super.dispose();
   }
 
-  // 🔄 Mengambil data dari form
+  // Mengambil data dari form
   Map<String, dynamic> getFormData() {
     return {
       'title': _titleController.text.trim(),
@@ -56,9 +57,7 @@ class FeedbackFormState extends State<FeedbackForm>
 
   @override
   Widget build(BuildContext context) {
-    final Color textColor = Colors.white;
-    final Color fieldColor = const Color(0xFF2C2C2E);
-    final Color accentColor = Colors.amber[700]!;
+   
 
     return FadeTransition(
       opacity: _fadeIn,
@@ -81,7 +80,7 @@ class FeedbackFormState extends State<FeedbackForm>
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
-              color: textColor,
+              color: AppColors.textColor,
             ),
           ),
           const SizedBox(height: 8),
@@ -96,7 +95,7 @@ class FeedbackFormState extends State<FeedbackForm>
               itemCount: 5,
               itemSize: 36,
               itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
-              itemBuilder: (context, _) => Icon(Icons.star, color: accentColor),
+              itemBuilder: (context, _) => Icon(Icons.star, color: AppColors.accentColor),
               onRatingUpdate: (rating) {
                 setState(() => _rating = rating);
               },
@@ -112,24 +111,24 @@ class FeedbackFormState extends State<FeedbackForm>
 
           const SizedBox(height: 24),
 
-          // 🏷️ Input Judul
+          // Input Judul
           Text(
             "feedback title",
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
-              color: textColor,
+              color: AppColors.textColor,
             ),
           ),
           const SizedBox(height: 8),
           TextField(
             controller: _titleController,
-            style: TextStyle(color: textColor),
+            style: TextStyle(color: AppColors.textColor),
             decoration: InputDecoration(
               hintText: 'enter feedback title',
               hintStyle: const TextStyle(color: Colors.white38),
               filled: true,
-              fillColor: fieldColor,
+              fillColor: AppColors.fieldColor,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14),
                 borderSide: BorderSide.none,
@@ -140,25 +139,25 @@ class FeedbackFormState extends State<FeedbackForm>
 
           const SizedBox(height: 24),
 
-          // 📝 Deskripsi
+          //Deskripsi
           Text(
             "give your feedback",
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
-              color: textColor,
+              color: AppColors.textColor,
             ),
           ),
           const SizedBox(height: 8),
           TextField(
             controller: _descController,
             maxLines: 4,
-            style: TextStyle(color: textColor),
+            style: TextStyle(color: AppColors.textColor),
             decoration: InputDecoration(
               hintText: 'enter your experience',
               hintStyle: const TextStyle(color: Colors.white38),
               filled: true,
-              fillColor: fieldColor,
+              fillColor: AppColors.fieldColor,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14),
                 borderSide: BorderSide.none,

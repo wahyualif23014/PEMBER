@@ -6,6 +6,7 @@ import 'package:absolute_cinema/screens/edit_profile_screen.dart';
 import 'package:absolute_cinema/themes/colors.dart';
 import 'package:absolute_cinema/widgets/profile_menu_item.dart';
 import 'package:absolute_cinema/screens/view_feedback_screen.dart';
+import 'package:absolute_cinema/screens/HistoryScreen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -170,14 +171,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ProfileMenuItem(
                       icon: Icons.history,
                       title: 'Purchase History',
-                      onTap:
-                          () => ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text(
-                                'Riwayat Pembelian akan segera tersedia',
-                              ),
-                            ),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => PurchaseHistoryScreen(),
                           ),
+                        );
+                      },
                     ),
                     ProfileMenuItem(
                       icon: Icons.settings,

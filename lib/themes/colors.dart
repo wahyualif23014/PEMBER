@@ -9,5 +9,6 @@ class AppColors {
   static const Color skeletonLight = Color(0xFF3D3D3D);
   static Color backgroundColor = Colors.black;
   static Color cardColor = const Color(0xFF1C1C1E);
+  static Color fieldColor = const Color(0xFF2C2C2E);
   static Color accentColor = Colors.amber[700]!;
 }
