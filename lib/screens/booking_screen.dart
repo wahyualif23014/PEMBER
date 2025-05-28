@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:uuid/uuid.dart';
 import 'package:lottie/lottie.dart';
-import 'package:absolute_cinema/services/notification_service.dart';
 
-import 'package:absolute_cinema/models/movie_model.dart';
-import 'package:absolute_cinema/models/ticket_model.dart';
-import 'package:absolute_cinema/services/ticket_service.dart';
-import 'package:absolute_cinema/widgets/seat_selection_widget.dart';
-import 'package:absolute_cinema/widgets/time_selector_widget.dart';
+import '../models/movie_model.dart';
+import '../models/ticket_model.dart';
+import '../services/notification_service.dart';
+import '../services/ticket_service.dart';
+import '../widgets/seat_selection_widget.dart';
+import '../widgets/time_selector_widget.dart';
 
 class BookingScreen extends StatefulWidget {
   final Movie movie;
@@ -24,16 +24,12 @@ class _BookingScreenState extends State<BookingScreen> {
   final TicketService ticketService = TicketService();
   final int seatPrice = 50000;
 
+  final List<String> defaultTimes = ['12:00', '15:00', '18:00'];
+
   List<String> selectedSeats = [];
   List<String> bookedSeats = [];
-  String? selectedShowtime;
+  DateTime? selectedShowtime;
   bool isLoading = false;
-
-  String _formatTime(DateTime dt) {
-    final hour = dt.toLocal().hour.toString().padLeft(2, '0');
-    final minute = dt.toLocal().minute.toString().padLeft(2, '0');
-    return '$hour:$minute';
-  }
 
   @override
   void initState() {
@@ -42,54 +38,45 @@ class _BookingScreenState extends State<BookingScreen> {
     if (widget.editingTicket != null) {
       selectedSeats = List.from(widget.editingTicket!.seats);
 
-      selectedShowtime = _formatTime(
-        DateTime.parse(widget.editingTicket!.showtime),
-      );
-
-      Future.delayed(Duration.zero, () {
-        fetchBookedSeats();
-      });
+      final now = DateTime.now();
+      final timeParts = widget.editingTicket!.showtime.split(":");
+      final hour = int.parse(timeParts[0]);
+      final minute = int.parse(timeParts[1]);
+      selectedShowtime = DateTime(now.year, now.month, now.day, hour, minute);
     } else {
-      selectedShowtime = '12:00';
-
-      Future.delayed(Duration.zero, () {
-        fetchBookedSeats();
-      });
+      final now = DateTime.now();
+      final defaultTime = defaultTimes.first;
+      final hour = int.parse(defaultTime.split(":")[0]);
+      final minute = int.parse(defaultTime.split(":")[1]);
+      selectedShowtime = DateTime(now.year, now.month, now.day, hour, minute);
     }
+
+    Future.delayed(Duration.zero, fetchBookedSeats);
   }
 
   void toggleSeat(String seat) {
     setState(() {
-      if (selectedSeats.contains(seat)) {
-        selectedSeats.remove(seat);
-      } else {
-        selectedSeats.add(seat);
-      }
+      selectedSeats.contains(seat)
+          ? selectedSeats.remove(seat)
+          : selectedSeats.add(seat);
     });
   }
 
   Future<void> fetchBookedSeats() async {
     if (selectedShowtime == null) return;
-
     setState(() => isLoading = true);
 
     List<String> seats;
-
     if (widget.editingTicket != null) {
-      // Saat edit, ambil semua booked seats (tanpa pengecualian)
-      seats = await ticketService.fetchAllBookedSeats(
-        widget.movie.title,
-        selectedShowtime!,
-      );
-
-      // Hapus kursi milik tiket sendiri agar tidak ditandai merah
-      seats.removeWhere((seat) => widget.editingTicket!.seats.contains(seat));
-    } else {
-      // Saat booking baru, tetap pakai exclude ID
       seats = await ticketService.fetchBookedSeatsByTitleAndTime(
         widget.movie.title,
         selectedShowtime!,
-        excludeTicketId: null,
+        excludeTicketId: widget.editingTicket!.id,
+      );
+    } else {
+      seats = await ticketService.fetchBookedSeatsByTitleAndTime(
+        widget.movie.title,
+        selectedShowtime!,
       );
     }
 
@@ -113,24 +100,19 @@ class _BookingScreenState extends State<BookingScreen> {
       id: widget.editingTicket?.id ?? const Uuid().v4(),
       movie: widget.movie,
       seats: selectedSeats,
-      showtime: selectedShowtime!,
+      showtime:
+          "${selectedShowtime!.hour.toString().padLeft(2, '0')}:${selectedShowtime!.minute.toString().padLeft(2, '0')}",
       totalPrice: selectedSeats.length * seatPrice,
     );
 
     if (widget.editingTicket != null) {
       await ticketService.updateTicketOnServer(ticket);
     } else {
+      print("masuk");
       await ticketService.addTicketToServer(ticket, user.uid);
-
-      // Notifikasi berhasil
-      await NotificationService.awesome_notifications(
-        title: 'Booking Berhasil',
-        body: 'Tiket untuk "${widget.movie.title}" telah berhasil dipesan!',
-      );
     }
 
     if (!mounted) return;
-
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
@@ -153,8 +135,8 @@ class _BookingScreenState extends State<BookingScreen> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         foregroundColor: Colors.white,
-        elevation: 0,
         centerTitle: true,
+        elevation: 0,
         title: Text(
           widget.editingTicket != null ? "Edit Ticket" : "Booking Seat",
         ),
@@ -169,11 +151,9 @@ class _BookingScreenState extends State<BookingScreen> {
                 child: Column(
                   children: [
                     const SizedBox(height: 20),
-                    SizedBox(
+                    Lottie.network(
+                      'https://lottie.host/77041b64-04ee-4b9b-ad70-3511eafb361e/qIsGDWDg8S.json',
                       height: 180,
-                      child: Lottie.network(
-                        'https://lottie.host/77041b64-04ee-4b9b-ad70-3511eafb361e/qIsGDWDg8S.json',
-                      ),
                     ),
                     Text(
                       widget.movie.title,
@@ -182,7 +162,6 @@ class _BookingScreenState extends State<BookingScreen> {
                         color: Colors.white,
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
-                        fontFamily: 'SF Pro Display',
                       ),
                     ),
                     const SizedBox(height: 20),
@@ -206,11 +185,25 @@ class _BookingScreenState extends State<BookingScreen> {
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: ShowtimeSelectorWidget(
-                        selectedTime: selectedShowtime,
+                        selectedTime:
+                            selectedShowtime != null
+                                ? "${selectedShowtime!.hour.toString().padLeft(2, '0')}:${selectedShowtime!.minute.toString().padLeft(2, '0')}"
+                                : defaultTimes.first,
                         onSelected: (val) {
+                          final hour = int.parse(val.split(":")[0]);
+                          final minute = int.parse(val.split(":")[1]);
+                          final now = DateTime.now();
+
                           setState(() {
-                            selectedShowtime = val;
+                            selectedShowtime = DateTime(
+                              now.year,
+                              now.month,
+                              now.day,
+                              hour,
+                              minute,
+                            );
                           });
+
                           fetchBookedSeats();
                         },
                       ),

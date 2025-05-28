@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:absolute_cinema/models/ticket_model.dart';
 import 'package:absolute_cinema/services/ticket_service.dart';
 import 'package:absolute_cinema/screens/booking_screen.dart';
-import 'package:intl/intl.dart';
 
 class TicketScreen extends StatefulWidget {
   const TicketScreen({super.key});
@@ -14,9 +13,6 @@ class TicketScreen extends StatefulWidget {
 
 class _TicketScreenState extends State<TicketScreen> {
   final TicketService ticketService = TicketService();
-  String getFormattedShowtime(DateTime showtime) {
-    return DateFormat("yyyy-MM-dd HH:mm").format(showtime);
-  }
 
   List<Ticket> userTickets = [];
   bool isLoading = true;
@@ -286,9 +282,7 @@ class TicketCard extends StatelessWidget {
                               ),
                             ),
                             Text(
-                              DateFormat(
-                                "yyyy-MM-dd HH:mm",
-                              ).format(DateTime.parse(ticket.showtime)),
+                              ticket.showtime,
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 16,

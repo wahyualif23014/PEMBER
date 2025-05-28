@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:absolute_cinema/screens/edit_profile_screen.dart';
 import 'package:absolute_cinema/themes/colors.dart';
 import 'package:absolute_cinema/widgets/profile_menu_item.dart';
-import 'package:http/http.dart';
 import 'package:absolute_cinema/screens/view_feedback_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -18,8 +17,7 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   String? username;
   String? email;
-  String profileImage = "assets/mupy.jpg"; // default fallback
-
+  String profileImage = "assets/mupy.jpg";
   bool isLoading = true;
 
   @override
@@ -31,9 +29,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Future<void> _loadUserProfile() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) {
-      setState(() {
-        isLoading = false;
-      });
+      setState(() => isLoading = false);
       return;
     }
 
@@ -43,20 +39,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
           await FirebaseFirestore.instance.collection('users').doc(uid).get();
 
       if (mounted) {
-        //pengechek an
         setState(() {
           username = userDoc.data()?['username'] ?? "Unknown User";
           email = user.email ?? "No Email";
+          profileImage =
+              userDoc.data()?['avatarUrl'] ??
+              "assets/mupy.jpg"; // ✅ ambil dari Firestore
           isLoading = false;
         });
       }
     } catch (e) {
       print("Error loading profile: $e");
-
       if (mounted) {
-        setState(() {
-          isLoading = false;
-        });
+        setState(() => isLoading = false);
       }
     }
   }
@@ -72,7 +67,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
               profileImage: profileImage,
               onSave: (newUsername, newEmail, newImagePath) {
                 if (!mounted) return;
-
                 setState(() {
                   username = newUsername;
                   email = newEmail;
@@ -86,7 +80,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   ImageProvider _getImageProvider(String path) {
     try {
-      if (path.startsWith('assets')) {
+      if (path.startsWith('http')) {
+        return NetworkImage(path); // ✅ tampilkan dari Supabase
+      } else if (path.startsWith('assets')) {
         return AssetImage(path);
       } else {
         final file = File(path);
@@ -111,7 +107,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
               : SingleChildScrollView(
                 child: Column(
                   children: [
-                    // Header profil
                     Container(
                       padding: const EdgeInsets.only(
                         top: 30,
@@ -171,9 +166,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ],
                       ),
                     ),
-
                     const SizedBox(height: 20),
-
                     ProfileMenuItem(
                       icon: Icons.history,
                       title: 'Purchase History',
@@ -209,7 +202,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       },
                     ),
                     const SizedBox(height: 20),
-
                     Padding(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 16,
@@ -267,7 +259,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         child: const Text('Logout'),
                       ),
                     ),
-
                     const SizedBox(height: 20),
                     const Text(
                       'Versi 1.0.0',

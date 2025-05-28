@@ -34,4 +34,20 @@ class Ticket {
       'price': totalPrice,
     };
   }
+
+  Ticket copyWith({
+    String? id,
+    Movie? movie,
+    List<String>? seats,
+    String? showtime,
+    int? totalPrice,
+  }) {
+    return Ticket(
+      id: id ?? this.id,
+      movie: movie ?? this.movie,
+      seats: seats ?? this.seats,
+      showtime: showtime ?? this.showtime,
+      totalPrice: totalPrice ?? this.totalPrice,
+    );
+  }
 }

@@ -12,6 +12,7 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 import 'services/notification_controller.dart';
 import 'package:absolute_cinema/widgets/connection_status_widget.dart';
 import 'package:absolute_cinema/services/ConnectionService.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' as supa;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -53,6 +54,11 @@ void main() async {
     await AwesomeNotifications().requestPermissionToSendNotifications();
   }
 
+  await supa.Supabase.initialize(
+    url: 'https://ifnrnryhiqskyhcjaqvo.supabase.co',
+    anonKey:
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlmbnJucnloaXFza3loY2phcXZvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgxNTk0NjQsImV4cCI6MjA2MzczNTQ2NH0.YEGW2-wru3n2uESapbM6XcyXss3_VghU8FavReWCFg0',
+  );
   // Firebase initialize
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
