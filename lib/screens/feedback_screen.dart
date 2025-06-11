@@ -170,7 +170,6 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
     );
   }
 
-  // Mendapatkan lokasi saat ini
   Future<void> _getCurrentLocation() async {
     try {
       setState(() {
@@ -219,7 +218,6 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
 
   Future<void> _takePhoto() async {
     try {
-      // Cek permission kamera
       var cameraStatus = await Permission.camera.status;
       if (!cameraStatus.isGranted) {
         cameraStatus = await Permission.camera.request();
