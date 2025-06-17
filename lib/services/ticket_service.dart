@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:absolute_cinema/models/ticket_log_model.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:absolute_cinema/models/ticket_model.dart';
@@ -130,5 +131,23 @@ class TicketService {
     }
 
     return [];
+  }
+
+  Future<List<TicketLog>> fetchTicketLogsByUserId(String userId) async {
+    final url = Uri.parse('$baseUrl/users/$userId/ticket-logs');
+
+    try {
+      final res = await http.get(url);
+      if (res.statusCode == 200) {
+        final List<dynamic> json = jsonDecode(res.body)['data'];
+        return json.map((e) => TicketLog.fromJson(e)).toList();
+      } else {
+        debugPrint('❌ Failed to load ticket logs: ${res.body}');
+        return [];
+      }
+    } catch (e) {
+      debugPrint('❌ Exception while loading ticket logs: $e');
+      return [];
+    }
   }
 }
