@@ -7,6 +7,7 @@ import 'package:absolute_cinema/themes/colors.dart';
 import 'package:absolute_cinema/widgets/profile_menu_item.dart';
 import 'package:absolute_cinema/screens/view_feedback_screen.dart';
 import 'package:absolute_cinema/screens/HistoryScreen.dart';
+import 'package:absolute_cinema/screens/setting_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -183,12 +184,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ProfileMenuItem(
                       icon: Icons.settings,
                       title: 'Setting',
-                      onTap:
-                          () => ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Pengaturan akan segera tersedia'),
-                            ),
-                          ),
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const SettingsScreen(),
+                        ),
+                      ),
                     ),
                     ProfileMenuItem(
                       icon: Icons.help_outline,
@@ -262,7 +263,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     const SizedBox(height: 20),
                     const Text(
-                      'Versi 1.0.0',
+                      'Version 2.0.0',
                       style: TextStyle(color: Colors.grey, fontSize: 12),
                     ),
                     const SizedBox(height: 20),

@@ -62,25 +62,25 @@ class _SearchBarAppState extends State<SearchBarApp> {
             color: Colors.grey[850],
             borderRadius: BorderRadius.circular(24),
           ),
-          child: DropdownButton<String>(
-            dropdownColor: Colors.grey[900],
-            value: selectedCategory,
-            underline: Container(),
-            iconEnabledColor: Colors.yellow,
-            style: const TextStyle(color: Colors.white),
-            items: const [
-              DropdownMenuItem(value: 'Film', child: Text('Film')),
-              DropdownMenuItem(value: 'Lokasi', child: Text('Lokasi')),
-            ],
-            onChanged: (value) {
-              if (value != null) {
-                setState(() {
-                  selectedCategory = value;
-                  _controller.clear();
-                });
-              }
-            },
-          ),
+          // child: DropdownButton<String>(
+          //   dropdownColor: Colors.grey[900],
+          //   value: selectedCategory,
+          //   underline: Container(),
+          //   iconEnabledColor: Colors.yellow,
+          //   style: const TextStyle(color: Colors.white),
+          //   items: const [
+          //     DropdownMenuItem(value: 'Film', child: Text('Film')),
+          //     DropdownMenuItem(value: 'Lokasi', child: Text('Lokasi')),
+          //   ],
+          //   onChanged: (value) {
+          //     if (value != null) {
+          //       setState(() {
+          //         selectedCategory = value;
+          //         _controller.clear();
+          //       });
+          //     }
+          //   },
+          // ),
         ),
         const SizedBox(width: 8),
         Expanded(
@@ -91,8 +91,8 @@ class _SearchBarAppState extends State<SearchBarApp> {
               filled: true,
               fillColor: Colors.grey[900],
               hintText: selectedCategory == 'Film'
-                  ? 'Cari judul film...'
-                  : 'Cari lokasi bioskop...',
+                  ? 'Search movie...'
+                  : 'Search location.',
               hintStyle: const TextStyle(color: Colors.white70),
               prefixIcon: const Icon(Icons.search, color: Colors.yellow),
               border: OutlineInputBorder(
