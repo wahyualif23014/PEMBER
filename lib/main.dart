@@ -14,8 +14,13 @@ import 'package:absolute_cinema/widgets/connection_status_widget.dart';
 import 'package:absolute_cinema/services/ConnectionService.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as supa;
 
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'dart:io';
+
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  MobileAds.instance.initialize();
 
   AwesomeNotifications().initialize(
     'resource://mipmap/ic_launcher', // icon aplikasi
@@ -65,6 +70,43 @@ void main() async {
   runApp(const MyApp());
 }
 
+// add mob
+class InterstitialExample extends StatefulWidget {
+  @override
+  InterstitialExampleState createState() => InterstitialExampleState();
+}
+
+class InterstitialExampleState extends State<InterstitialExample> {
+  InterstitialAd? _interstitialAd;
+
+  final adUnitId = Platform.isAndroid
+    ? 'ca-app-pub-3940256099942544/1033173712'
+    : 'ca-app-pub-3940256099942544/4411468910';
+
+  void loadAd() {
+    InterstitialAd.load(
+        adUnitId: adUnitId,
+        request: const AdRequest(),
+        adLoadCallback: InterstitialAdLoadCallback(
+          onAdLoaded: (ad) {
+            debugPrint('$ad loaded.');
+            _interstitialAd = ad;
+          },
+          onAdFailedToLoad: (LoadAdError error) {
+            debugPrint('InterstitialAd failed to load: $error');
+          },
+        ));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(
+      body: Center(
+        child: Text('Interstitial Example'),
+      ),
+    );
+  }
+}
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 

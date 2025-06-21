@@ -7,6 +7,8 @@ import 'package:absolute_cinema/widgets/search_location_bar.dart';
 import 'package:absolute_cinema/widgets/carousel_slider.dart';
 import 'package:absolute_cinema/widgets/movie_grid.dart';
 
+
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -134,6 +136,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                   ),
+
                   const SliverToBoxAdapter(child: SizedBox(height: 20)),
                   SliverPadding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
